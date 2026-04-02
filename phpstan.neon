@@ -1,0 +1,16 @@
+parameters:
+    # Start strict and adjust only when the codebase needs exceptions.
+    level: 8
+    paths:
+        - src
+    # Keep cache out of /.tmp to avoid stale state across environments.
+    tmpDir: .tmp/phpstan
+    fileExtensions:
+        - php
+    parallel:
+        maximumNumberOfProcesses: 1
+    excludePaths:
+        analyse:
+            - .tmp/*
+            - vendor/*
+            - tests/*

@@ -1,0 +1,12 @@
+* text=auto eol=lf
+*.php text eol=lf
+
+/.github export-ignore
+.gitattributes export-ignore
+.gitignore export-ignore
+/codecov.yml export-ignore
+/phpunit.xml.dist export-ignore
+/phpcs.xml.dist export-ignore
+/phpstan.neon export-ignore
+/.tmp export-ignore
+/tests export-ignore

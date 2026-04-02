@@ -1,0 +1,24 @@
+# IDE / Editor
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# log
+*.log
+
+# Specific Directories
+vendor/
+.tmp/
+
+# Lock
+*.lock
+
+# Composer
+composer.phar
+composer.lock
