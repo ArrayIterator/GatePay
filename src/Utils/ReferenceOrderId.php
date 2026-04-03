@@ -1,12 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace ArrayIterator\GatePay\Utils;
+namespace GatePay\Core\Utils;
 
-use Throwable;
 use function bin2hex;
 use function dechex;
-use function hash;
 use function max;
 use function microtime;
 use function min;
@@ -17,7 +15,6 @@ use function str_pad;
 use function strtoupper;
 use function substr;
 use function trim;
-use function uniqid;
 use const STR_PAD_LEFT;
 
 /**
@@ -32,7 +29,7 @@ class ReferenceOrderId
      * This default value is set to 'ORDR' to indicate that the generated order ID is an invoice.
      * This can be used with Product Identifier, eg: HSTG, KVMS, JKT1, etc.
      */
-    public const string DEFAULT_PREFIX = 'ORDR';
+    public const DEFAULT_PREFIX = 'ORDR';
 
     /**
      * @var non-empty-string $productPrefix
@@ -118,14 +115,16 @@ class ReferenceOrderId
      * @param int $length The desired length of the random string in bytes.
      * This value will be constrained to be between 1 and 32.
      * @return string A random string of bytes that can be used in the generation of the order ID.
+     * @throws \Throwable
      */
     public function createRandom(int $length): string
     {
         $max_length = 32;
         $min_length = 1;
         $length = max($min_length, min($max_length, $length));
+        return random_bytes($length);
+        /*
         try {
-            return random_bytes($length);
         } catch (Throwable) {
             return substr(
                 hash(
@@ -136,7 +135,7 @@ class ReferenceOrderId
                 0,
                 $length
             );
-        }
+        }*/
     }
 
     /**
@@ -166,6 +165,7 @@ class ReferenceOrderId
         $ms = $ms & 0xFFFFFFFFFFFF;
         $timestamp = str_pad(dechex($ms), 12, '0', STR_PAD_LEFT); // 12 characters
         // eg: ORDR-019d43d20eb8-7b54a125edb1
+        /** @noinspection PhpUnhandledExceptionInspection */
         $hex_random = bin2hex($this->createRandom(6)); // 12 char
         $prefix = $this->getProductPrefix(); // 4 char
         return sprintf(
@@ -212,7 +212,7 @@ class ReferenceOrderId
             'timestamp' => (int)hexdec($timestamp_hex),
             'timestamp_ms' => (int)hexdec($timestamp_hex),
             'random' => $random_hex,
-            'created_at' => date('Y-m-d H:i:s', (int)hexdec($timestamp_hex) / 1000),
+            'created_at' => date('Y-m-d H:i:s', (int)(hexdec($timestamp_hex) / 1000)),
         ];
     }
 
@@ -254,9 +254,9 @@ class ReferenceOrderId
         $prefix = self::formatPrefix($productPrefix);
 
         return [
-            'from' => "{$prefix}-{$from}",
-            'to' => "{$prefix}-{$to}",
-            'pattern' => "{$prefix}-%", // For LIKE queries
+            'from' => "$prefix-$from",
+            'to' => "$prefix-$to",
+            'pattern' => "$prefix-%", // For LIKE queries
         ];
     }
 }

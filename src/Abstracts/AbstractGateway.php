@@ -1,17 +1,18 @@
 <?php
 declare(strict_types=1);
 
-namespace ArrayIterator\GatePay\Abstracts;
+namespace GatePay\Core\Abstracts;
 
-use ArrayIterator\GatePay\Enum\GatewayAction;
-use ArrayIterator\GatePay\Exceptions\UnsupportedActionException;
-use ArrayIterator\GatePay\Exceptions\UnsupportedModeException;
-use ArrayIterator\GatePay\Interfaces\GatewayActionInterface;
-use ArrayIterator\GatePay\Interfaces\GatewayInterface;
-use ArrayIterator\GatePay\Interfaces\TransactionInterface;
-use ArrayIterator\GatePay\Interfaces\TransactionProcessorInterface;
-use ArrayIterator\GatePay\TransactionProcessor;
+use GatePay\Core\Enum\GatewayAction;
+use GatePay\Core\Exceptions\UnsupportedActionException;
+use GatePay\Core\Exceptions\UnsupportedModeException;
+use GatePay\Core\Interfaces\GatewayActionInterface;
+use GatePay\Core\Interfaces\GatewayInterface;
+use GatePay\Core\Interfaces\TransactionInterface;
+use GatePay\Core\Interfaces\TransactionProcessorInterface;
+use GatePay\Core\TransactionProcessor;
 use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Log\LoggerInterface;
 use Throwable;
@@ -50,7 +51,7 @@ abstract class AbstractGateway implements GatewayInterface
     protected ?string $version = null;
 
     /**
-     * @var array<key-of<GatewayAction>, GatewayActionInterface|class-string<GatewayActionInterface>> $actions
+     * @var array<value-of<GatewayAction>, GatewayActionInterface|class-string<GatewayActionInterface>> $actions
      * The list of supported actions for this gateway.
      * This should be defined in the concrete implementation of the gateway.
      */
@@ -219,6 +220,25 @@ abstract class AbstractGateway implements GatewayInterface
     }
 
     /**
+     * Prepares the HTTP client for processing the transaction.
+     * For example adding authentication, manipulating headers, etc.
+     * Or wrapping the client with a decorator that adds additional functionality
+     * (e.g., logging, retry logic, etc.).
+     *
+     * @param ClientInterface $client
+     * @param LoggerInterface|null $logger
+     * @return ClientInterface
+     * @abstract
+     * @noinspection PhpUnusedParameterInspection
+     */
+    protected function prepareClient(
+        ClientInterface $client,
+        ?LoggerInterface $logger = null
+    ): ClientInterface {
+        return $client;
+    }
+
+    /**
      * Post-processes the transaction after the HTTP request has been made.
      *
      * @param TransactionProcessorInterface $processor
@@ -263,6 +283,7 @@ abstract class AbstractGateway implements GatewayInterface
      */
     public function process(
         TransactionInterface $transaction,
+        RequestFactoryInterface $requestFactory,
         ClientInterface $client,
         ?LoggerInterface $logger = null
     ): TransactionProcessorInterface {
@@ -284,13 +305,14 @@ abstract class AbstractGateway implements GatewayInterface
                 )
             );
         }
-        $request = $action->createRequest($transaction, $logger);
+        $request = $action->createRequest($transaction, $requestFactory, $logger);
         $processor = new TransactionProcessor(
             gateway: $this,
             transaction: $transaction,
             request: $this->prepareRequest($request, $action, $transaction, $logger)
         );
         try {
+            $client = $this->prepareClient($client, $logger);
             $processor = $processor->process($client, $logger);
         } finally {
             return $this->postRequest($processor);

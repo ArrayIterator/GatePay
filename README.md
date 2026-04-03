@@ -21,12 +21,11 @@ Verdict: ReferenceOrderId suitable for payment gateway rather than uuid-v7
 
 Example usage:
 
-
 ```php
 <?php
 declare(strict_types=1);
 
-use ArrayIterator\GatePay\Utils\ReferenceOrderId;
+use GatePay\Core\Utils\ReferenceOrderId;
 
 $prefix = "INVC" 
 $orderIdGen = new ReferenceOrderId($prefix);
@@ -47,9 +46,7 @@ Note: Default transaction stack [TransactionStack.php](src/TransactionStack.php)
 <?php
 declare(strict_types=1);
 
-use ArrayIterator\GatePay\Enum\TransactionState;use ArrayIterator\GatePay\GatewayRegistry;use ArrayIterator\GatePay\Transaction;
-use ArrayIterator\GatePay\Utils\ReferenceOrderId;
-use ArrayIterator\CreditCard\CreditCard;
+use GatePay\Core\CreditCard;use GatePay\Core\Enum\TransactionState;use GatePay\Core\GatewayRegistry;use GatePay\Core\Transaction;use GatePay\Core\Utils\ReferenceOrderId;
 
 // 1. Generate Order ID
 $orderIdGen = new ReferenceOrderId('PYMT');

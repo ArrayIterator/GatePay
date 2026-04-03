@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace ArrayIterator\GatePay;
+namespace GatePay\Core;
 
-use ArrayIterator\GatePay\Enum\TransactionStatus;
-use ArrayIterator\GatePay\Interfaces\TransactionInterface;
-use ArrayIterator\GatePay\Interfaces\TransactionResponseInterface;
+use GatePay\Core\Enum\TransactionStatus;
+use GatePay\Core\Interfaces\TransactionInterface;
+use GatePay\Core\Interfaces\TransactionResponseInterface;
 use Psr\Http\Message\ResponseInterface;
 
 class TransactionResponse implements TransactionResponseInterface

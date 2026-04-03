@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace ArrayIterator\GatePay\Interfaces;
+namespace GatePay\Core\Interfaces;
 
-use ArrayIterator\GatePay\Enum\GatewayAction;
+use GatePay\Core\Enum\GatewayAction;
 
 /**
  * This interface defines the contract for a transaction that can be processed by a payment gateway.

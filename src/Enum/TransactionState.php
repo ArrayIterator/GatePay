@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace ArrayIterator\GatePay\Enum;
+namespace GatePay\Core\Enum;
 
 enum TransactionState: string
 {

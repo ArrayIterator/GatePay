@@ -1,22 +1,22 @@
 <?php
 declare(strict_types=1);
 
-namespace ArrayIterator\GatePay;
+namespace GatePay\Core;
 
-use ArrayIterator\GatePay\Exceptions\TransactionException;
-use ArrayIterator\GatePay\Interfaces\TransactionErrorInterface;
-use ArrayIterator\GatePay\Interfaces\TransactionInterface;
+use GatePay\Core\Exceptions\TransactionException;
+use GatePay\Core\Interfaces\TransactionErrorInterface;
+use GatePay\Core\Interfaces\TransactionInterface;
 use GuzzleHttp\Exception\RequestException;
 use Throwable;
 
-readonly class TransactionError implements TransactionErrorInterface
+class TransactionError implements TransactionErrorInterface
 {
     /**
      * TransactionError constructor.
      *
      * @param TransactionException $exception The exception that caused the transaction to fail.
      */
-    public function __construct(public TransactionException $exception)
+    public function __construct(public readonly TransactionException $exception)
     {
     }
 

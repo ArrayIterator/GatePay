@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace ArrayIterator\GatePay\Interfaces;
+namespace GatePay\Core\Interfaces;
 
-use ArrayIterator\GatePay\Enum\TransactionStatus;
+use GatePay\Core\Enum\TransactionStatus;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Log\LoggerInterface;
@@ -71,6 +71,9 @@ interface TransactionProcessorInterface
     /**
      * Process the transaction and return the result.
      *
+     * @param ClientInterface $client The HTTP client to be used for sending requests to the payment gateway.
+     * @param LoggerInterface|null $logger
+     * An optional logger for logging any relevant information during transaction processing.
      * @return TransactionProcessorInterface
      * Returns the instance of the transaction processor after processing the transaction,
      * which may contain updated information about the transaction status, response, or error details.

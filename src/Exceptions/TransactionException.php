@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace ArrayIterator\GatePay\Exceptions;
+namespace GatePay\Core\Exceptions;
 
-use ArrayIterator\GatePay\Interfaces\TransactionInterface;
+use GatePay\Core\Interfaces\TransactionInterface;
 use RuntimeException;
 use Throwable;
 

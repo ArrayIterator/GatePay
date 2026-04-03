@@ -1,17 +1,16 @@
 <?php
 declare(strict_types=1);
 
-namespace ArrayIterator\GatePay;
+namespace GatePay\Core;
 
-use ArrayIterator\CreditCard\Interfaces\TransactionStack;
-use ArrayIterator\GatePay\Enum\GatewayAction;
-use ArrayIterator\GatePay\Enum\TransactionState;
-use ArrayIterator\GatePay\Interfaces\TransactionErrorInterface;
-use ArrayIterator\GatePay\Interfaces\TransactionInterface;
-use ArrayIterator\GatePay\Interfaces\TransactionProcessorInterface;
-use ArrayIterator\GatePay\Interfaces\TransactionResponseInterface;
-use ArrayIterator\GatePay\Interfaces\TransactionResultDataInterface;
-use ArrayIterator\GatePay\Interfaces\TransactionStackInterface;
+use GatePay\Core\Enum\GatewayAction;
+use GatePay\Core\Enum\TransactionState;
+use GatePay\Core\Interfaces\TransactionErrorInterface;
+use GatePay\Core\Interfaces\TransactionInterface;
+use GatePay\Core\Interfaces\TransactionProcessorInterface;
+use GatePay\Core\Interfaces\TransactionResponseInterface;
+use GatePay\Core\Interfaces\TransactionResultDataInterface;
+use GatePay\Core\Interfaces\TransactionStackInterface;
 use Psr\Log\LoggerInterface;
 
 /**

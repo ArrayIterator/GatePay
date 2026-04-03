@@ -1,14 +1,15 @@
 <?php
 declare(strict_types=1);
 
-namespace ArrayIterator\GatePay;
+namespace GatePay\Core;
 
-use ArrayIterator\GatePay\Interfaces\GatewayInterface;
 use Countable;
+use GatePay\Core\Interfaces\GatewayInterface;
 use function array_filter;
 use function count;
 use function get_class;
 use function is_object;
+use function is_string;
 use function strrpos;
 use function strtolower;
 use function substr;
@@ -77,14 +78,15 @@ class GatewayRegistry implements Countable
      * @param string $alias The alias to be added for the gateway adapter.
      * @param string|Gateway $adapter The gateway adapter instance or its class name for which the alias is being added.
      */
-    public function addAlias(string $alias, string|GatewayInterface $adapter): void
+    public function addAlias(string $alias, string|GatewayInterface $adapter): ?GatewayInterface
     {
         $obj = $this->get($adapter);
         if ($obj === null) {
-            return; // Adapter not found, cannot add alias
+            return null; // Adapter not found, cannot add alias
         }
         $className = get_class($obj);
         $this->aliasesName[$alias] = $className;
+        return $obj;
     }
 
     /**
@@ -138,6 +140,10 @@ class GatewayRegistry implements Countable
      */
     public function get(string|GatewayInterface $name): ?GatewayInterface
     {
+        /**
+         * Object protection from binding to the class name,
+         * and also support for getting gateway by instance.
+         */
         if (is_object($name)) {
             $originalClassName = get_class($name);
             $name = strtolower($originalClassName);
@@ -145,15 +151,21 @@ class GatewayRegistry implements Countable
             $name = $this->originalClassNames[$name];
         }
         if (isset($this->gateways[$name])) {
-            return $this->gateways[$name];
+            if ($this->gateways[$name] instanceof GatewayInterface) {
+                return $this->gateways[$name];
+            }
+            unset($this->gateways[$name]); // Remove the invalid gateway entry
+            unset($this->originalClassNames[$name]); // Remove the original class name mapping
+            unset($this->aliasesName[$name]); // Remove the alias if the gateway is not valid
+            return null; // No gateway found for the given name
         }
         $className = $this->aliasesName[$name] ?? null;
-        if ($className === null) {
+        if (!is_string($className)) {
             return null; // No gateway found for the given name or alias
         }
         // get the lowercase class name from the original class name
         $lowerClassName = $this->originalClassNames[$className] ?? null;
-        if ($lowerClassName === null) {
+        if (!is_string($lowerClassName)) {
             unset($this->aliasesName[$name]); // Remove the alias if the original class name is not found
             return null; // No gateway found for the given alias
         }
@@ -161,6 +173,14 @@ class GatewayRegistry implements Countable
             unset($this->aliasesName[$name]); // Remove the alias if the gateway is not found
             unset($this->originalClassNames[$className]); // Remove the original class name mapping
             return null; // No gateway found for the given alias
+        }
+        if (!$this->gateways[$lowerClassName] instanceof GatewayInterface
+            || strtolower(get_class($this->gateways[$lowerClassName])) !== $lowerClassName
+        ) {
+            unset($this->gateways[$lowerClassName]); // Remove the invalid gateway entry
+            unset($this->aliasesName[$name]); // Remove the alias if the gateway is not valid
+            unset($this->originalClassNames[$className]); // Remove the original class name mapping
+            return null; // No valid gateway found for the given alias
         }
         return $this->gateways[$lowerClassName];
     }

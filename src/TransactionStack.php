@@ -1,17 +1,15 @@
 <?php
 declare(strict_types=1);
 
-namespace ArrayIterator\CreditCard\Interfaces;
+namespace GatePay\Core;
 
-use ArrayIterator\GatePay\Enum\SourceType;
-use ArrayIterator\GatePay\Enum\TransactionState;
-use ArrayIterator\GatePay\Interfaces\TransactionErrorInterface;
-use ArrayIterator\GatePay\Interfaces\TransactionProcessorInterface;
-use ArrayIterator\GatePay\Interfaces\TransactionResponseInterface;
-use ArrayIterator\GatePay\Interfaces\TransactionResultDataInterface;
-use ArrayIterator\GatePay\Interfaces\TransactionStackInterface;
-use ArrayIterator\GatePay\Transaction;
-use ArrayIterator\GatePay\TransactionResultData;
+use GatePay\Core\Enum\SourceType;
+use GatePay\Core\Enum\TransactionState;
+use GatePay\Core\Interfaces\TransactionErrorInterface;
+use GatePay\Core\Interfaces\TransactionProcessorInterface;
+use GatePay\Core\Interfaces\TransactionResponseInterface;
+use GatePay\Core\Interfaces\TransactionResultDataInterface;
+use GatePay\Core\Interfaces\TransactionStackInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 use Throwable;
@@ -88,7 +86,7 @@ class TransactionStack implements TransactionStackInterface
     /**
      * @inheritdoc
      */
-    public function setEnableLogging(bool $enableLogging) : void
+    public function setEnableLogging(bool $enableLogging): void
     {
         $this->enableLogging = $enableLogging;
     }
@@ -109,7 +107,7 @@ class TransactionStack implements TransactionStackInterface
         TransactionState|array        $prevState,
         TransactionProcessorInterface $processor,
         ?LoggerInterface              $logger
-    ) : bool {
+    ): bool {
         $transaction = $processor->getTransaction();
         if ($transaction !== $this->transaction) {
             // skip if the processor is not the same as the transaction
@@ -125,7 +123,7 @@ class TransactionStack implements TransactionStackInterface
         }
         return $transaction->getState() === $processState && (
             is_array($prevState) ? in_array($this->state, $prevState) : $this->state === $prevState
-        );
+            );
     }
 
     /**
@@ -149,9 +147,9 @@ class TransactionStack implements TransactionStackInterface
      * @inheritdoc
      */
     final public function then(
-        TransactionResponseInterface $result,
+        TransactionResponseInterface  $result,
         TransactionProcessorInterface $processor,
-        ?LoggerInterface $logger = null
+        ?LoggerInterface              $logger = null
     ): void {
         if (!$this->isProcessable(
             TransactionState::SUCCESS,
@@ -170,9 +168,9 @@ class TransactionStack implements TransactionStackInterface
      * @inheritdoc
      */
     final public function catch(
-        TransactionErrorInterface $error,
+        TransactionErrorInterface     $error,
         TransactionProcessorInterface $processor,
-        ?LoggerInterface $logger = null
+        ?LoggerInterface              $logger = null
     ): void {
         if (!$this->isProcessable(
             TransactionState::ERROR,
@@ -201,7 +199,7 @@ class TransactionStack implements TransactionStackInterface
         }
         $this->state = TransactionState::FINAL;
         $this->transactionResponse = $processor->getTransactionResponse()
-            ??$this->transactionResponse;
+            ?? $this->transactionResponse;
         $response = $this->transactionResponse?->getResponse();
         if (!$response) {
             return;
@@ -232,9 +230,10 @@ class TransactionStack implements TransactionStackInterface
         if (preg_match('~application/([^/+;]\+)?xml~i', $contentType)) {
             return SourceType::XML;
         }
-        if (preg_match('~/([^/+;]\+)?ya?ml\s*(;|$)~i', $contentType)) {
-            return SourceType::YAML;
-        }
+        // it is impossible payment gateway returning YAML fil!e, so we can skip it for now
+        // if (preg_match('~/([^/+;]\+)?ya?ml\s*(;|$)~i', $contentType)) {
+        //    return SourceType::YAML;
+        // }
         return null;
     }
 
@@ -261,10 +260,22 @@ class TransactionStack implements TransactionStackInterface
      * @abstract
      */
     protected function parseDataFromResponse(
-        ResponseInterface $response,
+        ResponseInterface             $response,
         TransactionProcessorInterface $processor,
-        ?LoggerInterface $logger = null
+        ?LoggerInterface              $logger = null
     ): ?TransactionResultDataInterface {
+        if ($processor->getTransaction() !== $this->transaction) {
+            // skip if the processor is not the same as the transaction
+            $this->isEnableLogging() && $logger?->warning(
+                'TransactionProcessor does not match the transaction in the stack. Skipping parsing response data.',
+                [
+                    'processor_transaction' => $processor->getTransaction(),
+                    'stack_transaction' => $this->transaction,
+                    'state' => $this->state,
+                ]
+            );
+            return null;
+        }
         $sourceType = $this->detectSourceType($response);
         if ($sourceType === null) {
             return null;
@@ -285,7 +296,6 @@ class TransactionStack implements TransactionStackInterface
             return match ($sourceType) {
                 SourceType::JSON => TransactionResultData::fromJson($content)->freeze(),
                 SourceType::XML => TransactionResultData::fromXML($content)->freeze(),
-                SourceType::YAML => TransactionResultData::fromYAML($content)->freeze(),
                 default => null,
             };
         } catch (Throwable $e) {
@@ -320,7 +330,7 @@ class TransactionStack implements TransactionStackInterface
      */
     protected function onStart(
         TransactionProcessorInterface $processor,
-        ?LoggerInterface $logger = null
+        ?LoggerInterface              $logger = null
     ) {
     }
 
@@ -346,9 +356,9 @@ class TransactionStack implements TransactionStackInterface
      * @abstract
      */
     protected function onSuccess(
-        TransactionResponseInterface $result,
+        TransactionResponseInterface  $result,
         TransactionProcessorInterface $processor,
-        ?LoggerInterface $logger = null
+        ?LoggerInterface              $logger = null
     ) {
     }
 
@@ -373,9 +383,9 @@ class TransactionStack implements TransactionStackInterface
      * @abstract
      */
     protected function onError(
-        TransactionErrorInterface $error,
+        TransactionErrorInterface     $error,
         TransactionProcessorInterface $processor,
-        ?LoggerInterface $logger = null
+        ?LoggerInterface              $logger = null
     ) {
     }
 
@@ -404,7 +414,7 @@ class TransactionStack implements TransactionStackInterface
      */
     protected function onFinish(
         TransactionProcessorInterface $processor,
-        ?LoggerInterface $logger = null
+        ?LoggerInterface              $logger = null
     ) {
     }
 }

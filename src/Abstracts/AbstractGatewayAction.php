@@ -1,12 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace ArrayIterator\GatePay\Abstracts;
+namespace GatePay\Core\Abstracts;
 
-use ArrayIterator\GatePay\Enum\GatewayAction;
-use ArrayIterator\GatePay\Interfaces\GatewayActionInterface;
-use ArrayIterator\GatePay\Interfaces\GatewayInterface;
-use ArrayIterator\GatePay\Interfaces\TransactionInterface;
+use GatePay\Core\Enum\GatewayAction;
+use GatePay\Core\Interfaces\GatewayActionInterface;
+use GatePay\Core\Interfaces\GatewayInterface;
+use GatePay\Core\Interfaces\TransactionInterface;
+use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Log\LoggerInterface;
 
@@ -54,6 +55,7 @@ abstract class AbstractGatewayAction implements GatewayActionInterface
      */
     abstract public function createRequest(
         TransactionInterface $transaction,
+        RequestFactoryInterface $requestFactory,
         ?LoggerInterface $logger = null
     ): RequestInterface;
 }

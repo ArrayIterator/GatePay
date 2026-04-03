@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace ArrayIterator\GatePay\Interfaces;
+namespace GatePay\Core\Interfaces;
 
-use ArrayIterator\GatePay\Exceptions\TransactionException;
+use GatePay\Core\Exceptions\TransactionException;
 
 /**
  * This interface defines the contract for the result of a transaction processed by a payment gateway.

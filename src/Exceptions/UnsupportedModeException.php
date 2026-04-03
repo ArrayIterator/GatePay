@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace ArrayIterator\GatePay\Exceptions;
+namespace GatePay\Core\Exceptions;
 
-use ArrayIterator\GatePay\Interfaces\GatewayInterface;
+use GatePay\Core\Interfaces\GatewayInterface;
 use RuntimeException;
 use Throwable;
 
@@ -29,7 +29,7 @@ class UnsupportedModeException extends RuntimeException
         int $code = 0,
         ?Throwable $previous = null
     ) {
-        $message = $message ?: "The mode '{$mode}' is not supported by the gateway '{$gateway->getName()}'.";
+        $message = $message ?: "The mode '$mode' is not supported by the gateway '{$gateway->getName()}'.";
         parent::__construct($message, $code, $previous);
     }
 

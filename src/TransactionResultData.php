@@ -1,19 +1,17 @@
 <?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
 declare(strict_types=1);
 
-namespace ArrayIterator\GatePay;
+namespace GatePay\Core;
 
 use ArrayIterator;
-use ArrayIterator\GatePay\Enum\SourceType;
-use ArrayIterator\GatePay\Exceptions\DataFrozenException;
-use ArrayIterator\GatePay\Interfaces\TransactionResultDataInterface;
-use ArrayIterator\GatePay\Utils\XMLParserArray;
-use ParseError;
-use Symfony\Component\Yaml\Yaml;
+use GatePay\Core\Enum\SourceType;
+use GatePay\Core\Exceptions\DataFrozenException;
+use GatePay\Core\Interfaces\TransactionResultDataInterface;
+use GatePay\Core\Utils\XMLParserArray;
 use Traversable;
 use function array_key_exists;
 use function count;
-use function is_array;
 use function json_decode;
 use function serialize;
 use function unserialize;
@@ -71,7 +69,7 @@ final class TransactionResultData implements TransactionResultDataInterface
     /**
      * Create a TransactionResultData instance from a JSON string.
      *
-     * @throws JsonException
+     * @throws \JsonException
      */
     public static function fromJson(string $json): self
     {
@@ -82,25 +80,11 @@ final class TransactionResultData implements TransactionResultDataInterface
     /**
      * Create a TransactionResultData instance from a JSON string.
      *
-     * @throws Throwable
+     * @throws \Throwable
      */
     public static function fromXML(string $xml): self
     {
         return new self(SourceType::XML, XMLParserArray::parse($xml));
-    }
-
-    /**
-     * Create a TransactionResultData instance from a JSON string.
-     *
-     * @throws Throwable
-     */
-    public static function fromYAML(string $xml): self
-    {
-        $yaml = Yaml::parse($xml);
-        if (!is_array($yaml)) {
-            throw new ParseError('Failed to parse YAML string into an array.');
-        }
-        return new self(SourceType::YAML, $yaml);
     }
 
     /**

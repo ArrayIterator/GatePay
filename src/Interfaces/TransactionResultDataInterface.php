@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace ArrayIterator\GatePay\Interfaces;
+namespace GatePay\Core\Interfaces;
 
-use ArrayIterator\GatePay\Enum\SourceType;
 use Countable;
+use GatePay\Core\Enum\SourceType;
 use IteratorAggregate;
 use JsonSerializable;
 use Serializable;
@@ -81,7 +81,7 @@ interface TransactionResultDataInterface extends Serializable, Countable, JsonSe
      * @param TKey $key The key to set in the transaction data.
      * @param TValue $value The value to associate with the specified key.
      * @return void
-     * @throws \ArrayIterator\GatePay\Exceptions\DataFrozenException
+     * @throws \GatePay\Core\Exceptions\DataFrozenException
      * If the transaction data is frozen and cannot be modified.
      * @noinspection PhpFullyQualifiedNameUsageInspection
      */

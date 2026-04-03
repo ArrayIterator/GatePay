@@ -1,9 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace ArrayIterator\GatePay\Interfaces;
+namespace GatePay\Core\Interfaces;
 
-use ArrayIterator\GatePay\Enum\GatewayAction;
+use GatePay\Core\Enum\GatewayAction;
+use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Log\LoggerInterface;
 
@@ -50,15 +51,17 @@ interface GatewayActionInterface
      * Create and return the HTTP request that represents this payment action for a given transaction.
      *
      * @param TransactionInterface $transaction The transaction for which the request is being created.
+     * @param RequestFactoryInterface $requestFactory The factory to use for creating the HTTP request.
      * @param LoggerInterface|null $logger Optional logger for logging any relevant information during request creation
      * @return RequestInterface The HTTP request to be sent to the payment gateway for processing this action.
      *
-     * @throws \ArrayIterator\GatePay\Exceptions\UnsupportedActionException
+     * @throws \GatePay\Core\Exceptions\UnsupportedActionException
      *
      * @noinspection PhpFullyQualifiedNameUsageInspection
      */
     public function createRequest(
         TransactionInterface $transaction,
+        RequestFactoryInterface $requestFactory,
         ?LoggerInterface $logger = null
     ) : RequestInterface;
 }

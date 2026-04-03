@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace ArrayIterator\GatePay\Enum;
+namespace GatePay\Core\Enum;
 
 enum GatewayAction: string
 {
@@ -9,264 +9,269 @@ enum GatewayAction: string
     /**
      * Direct deduction of funds from the customer's account (Sale).
      */
-    case CHARGE = 'charge';
+    case CHARGE = 'CHARGE';
 
     /**
      * Processing a payment that involves customer redirection to the gateway's
      * hosted page (e.g., PayPal, Midtrans Snap).
      */
-    case PURCHASE = 'purchase';
+    case PURCHASE = 'PURCHASE';
 
     /**
      * Reserving/holding funds on the account without actual deduction.
      */
-    case AUTHORIZE = 'authorize';
+    case AUTHORIZE = 'AUTHORIZE';
 
     /**
      * Capturing funds that were previously authorized.
      */
-    case CAPTURE = 'capture';
+    case CAPTURE = 'CAPTURE';
 
     /**
      * Cancelling an authorized transaction that has not been captured yet.
      */
-    case VOID = 'void';
+    case VOID = 'VOID';
 
     /**
      * Returning funds to the customer.
      */
-    case REFUND = 'refund';
+    case REFUND = 'REFUND';
 
     /**
      * Cancelling a transaction that is still in a pending state.
      */
-    case CANCEL = 'cancel';
+    case CANCEL = 'CANCEL';
 
     /**
      * Verifying the validity of a payment method without processing a charge.
      */
-    case VERIFY = 'verify';
+    case VERIFY = 'VERIFY';
 
     /**
      * Forcing a transaction to expire (e.g., Virtual Accounts or time-limited links).
      */
-    case EXPIRE = 'expire';
+    case EXPIRE = 'EXPIRE';
 
     // --- 2. DIRECT API & PUSH PAYMENTS ---
     /**
      * Direct charge processing without customer redirection (Server-to-Server).
      */
-    case DIRECT_CHARGE = 'direct_charge';
+    case DIRECT_CHARGE = 'DIRECT_CHARGE';
 
     /**
      * Direct refund processing without manual approval workflows.
      */
-    case DIRECT_REFUND = 'direct_refund';
+    case DIRECT_REFUND = 'DIRECT_REFUND';
 
     /**
      * Handling payment disputes or chargebacks raised by customers. (Chargeback management)
      */
-    case DISPUTE = 'dispute';
+    case DISPUTE = 'DISPUTE';
 
     /**
      * Submitting evidence or responding to a dispute raised by the customer.
      */
-    case CHALLENGE_DISPUTE = 'challenge_dispute';
+    case CHALLENGE_DISPUTE = 'CHALLENGE_DISPUTE';
 
     /**
      * Accepting the dispute and refunding the customer.
      */
-    case RESOLVE_DISPUTE = 'resolve_dispute';
+    case RESOLVE_DISPUTE = 'RESOLVE_DISPUTE';
 
     /**
      * Retrieving details and status of a specific dispute.
      */
-    case GET_DISPUTE = 'get_dispute';
+    case GET_DISPUTE = 'GET_DISPUTE';
 
     /**
      * Retrieving a list of disputes for a specific charge or customer.
      */
-    case GET_DISPUTES = 'get_disputes';
+    case GET_DISPUTES = 'GET_DISPUTES';
 
     // --- 4. BALANCE, PAYOUTS & RECONCILIATION ---
     /**
      * Retrieving the detailed status and payload of a specific charge.
      */
-    case GET_CHARGE = 'get_charge';
+    case GET_CHARGE = 'GET_CHARGE';
 
     /**
      * Retrieving general transaction history or logs.
      */
-    case GET_TRANSACTION = 'get_transaction';
+    case GET_TRANSACTION = 'GET_TRANSACTION';
 
     /**
      * Checking the account balance within the payment gateway (e.g., Stripe, PayPal).
      */
-    case GET_BALANCE = 'get_balance';
+    case GET_BALANCE = 'GET_BALANCE';
 
     /**
      * Retrieving historical balance changes, including payouts and fees.
      */
-    case GET_BALANCE_HISTORY = 'get_balance_history';
+    case GET_BALANCE_HISTORY = 'GET_BALANCE_HISTORY';
 
     /**
      * Retrieving financial statements or payouts for reconciliation.
      */
-    case GET_STATEMENT = 'get_statement';
+    case GET_STATEMENT = 'GET_STATEMENT';
 
     /**
      * Processing Webhooks or Instant Payment Notifications (IPN) sent by the gateway.
      */
-    case HANDLE_NOTIFICATION = 'handle_notification';
+    case HANDLE_NOTIFICATION = 'HANDLE_NOTIFICATION';
 
     // --- 4. CARD & PAYMENT METHOD MANAGEMENT (VAULTING) ---
     /**
      * Saving card data securely and returning a reusable token (Tokenization).
      */
-    case REGISTER_CARD = 'register_card';
+    case REGISTER_CARD = 'REGISTER_CARD';
 
     /**
      * Retrieving saved card token details.
      */
-    case GET_CARD = 'get_card';
+    case GET_CARD = 'GET_CARD';
 
     /**
      * Deleting a saved card token.
      */
-    case DELETE_CARD = 'delete_card';
+    case DELETE_CARD = 'DELETE_CARD';
 
     /**
      * Saving non-card payment methods for future use.
      */
-    case CREATE_PAYMENT_METHOD = 'create_payment_method';
+    case CREATE_PAYMENT_METHOD = 'CREATE_PAYMENT_METHOD';
 
     /**
      * Retrieving a saved payment method.
      */
-    case GET_PAYMENT_METHOD = 'get_payment_method';
+    case GET_PAYMENT_METHOD = 'GET_PAYMENT_METHOD';
 
     /**
      * Updating details of a saved payment method.
      */
-    case UPDATE_PAYMENT_METHOD = 'update_payment_method';
+    case UPDATE_PAYMENT_METHOD = 'UPDATE_PAYMENT_METHOD';
 
     /**
      * Deleting a saved payment method.
      */
-    case DELETE_PAYMENT_METHOD = 'delete_payment_method';
+    case DELETE_PAYMENT_METHOD = 'DELETE_PAYMENT_METHOD';
 
     // --- 5. SUBSCRIPTIONS ---
     /**
      * Creating a recurring billing profile.
      */
-    case CREATE_SUBSCRIPTION = 'create_subscription';
+    case CREATE_SUBSCRIPTION = 'CREATE_SUBSCRIPTION';
 
     /**
      * Retrieving subscription profile details.
      */
-    case GET_SUBSCRIPTION = 'get_subscription';
+    case GET_SUBSCRIPTION = 'GET_SUBSCRIPTION';
 
     /**
      * Modifying an existing subscription (e.g., upgrading/downgrading plans).
      */
-    case UPDATE_SUBSCRIPTION = 'update_subscription';
+    case UPDATE_SUBSCRIPTION = 'UPDATE_SUBSCRIPTION';
 
     /**
      * Cancelling a recurring billing profile.
      */
-    case CANCEL_SUBSCRIPTION = 'cancel_subscription';
+    case CANCEL_SUBSCRIPTION = 'CANCEL_SUBSCRIPTION';
 
     /**
      * Temporarily suspending a subscription.
      */
-    case PAUSE_SUBSCRIPTION = 'pause_subscription';
+    case PAUSE_SUBSCRIPTION = 'PAUSE_SUBSCRIPTION';
 
     /**
      * Reactivating a paused subscription.
      */
-    case RESUME_SUBSCRIPTION = 'resume_subscription';
+    case RESUME_SUBSCRIPTION = 'RESUME_SUBSCRIPTION';
 
     // --- 6. CUSTOMERS ---
     /**
      * Creating a customer profile in the gateway vault.
      */
-    case CREATE_CUSTOMER = 'create_customer';
+    case CREATE_CUSTOMER = 'CREATE_CUSTOMER';
 
     /**
      * Retrieving customer profile details.
      */
-    case GET_CUSTOMER = 'get_customer';
+    case GET_CUSTOMER = 'GET_CUSTOMER';
 
     /**
      * Updating a customer profile.
      */
-    case UPDATE_CUSTOMER = 'update_customer';
+    case UPDATE_CUSTOMER = 'UPDATE_CUSTOMER';
 
     /**
      * Deleting a customer profile.
      */
-    case DELETE_CUSTOMER = 'delete_customer';
+    case DELETE_CUSTOMER = 'DELETE_CUSTOMER';
 
     // --- 7. INVOICE & BILLING ---
     /**
      * Creating a new invoice.
      */
-    case CREATE_INVOICE = 'create_invoice';
+    case CREATE_INVOICE = 'CREATE_INVOICE';
 
     /**
      * Retrieving invoice details.
      */
-    case GET_INVOICE = 'get_invoice';
+    case GET_INVOICE = 'GET_INVOICE';
 
     /**
      * Updating an invoice.
      */
-    case UPDATE_INVOICE = 'update_invoice';
+    case UPDATE_INVOICE = 'UPDATE_INVOICE';
 
     /**
      * Deleting an invoice.
      */
-    case DELETE_INVOICE = 'delete_invoice';
+    case DELETE_INVOICE = 'DELETE_INVOICE';
 
     /**
      * Dispatching an invoice to the customer via email or API.
      */
-    case SEND_INVOICE = 'send_invoice';
+    case SEND_INVOICE = 'SEND_INVOICE';
 
     // --- 8. REDIRECT-BASED GATEWAYS OR AUTHENTICATION BASED TOKEN ---
     /**
      * Retrieving token or session details for initiating a redirect-based payment flow (e.g., PayPal etc,).
      */
-    case GET_TOKEN = 'get_token';
+    case GET_TOKEN = 'GET_TOKEN';
 
     /**
      * Refreshing or updating an existing token for continued frontend interactions.
      * OR update existing token with new parameters (e.g., amount, customer details)=
      */
-    case UPDATE_TOKEN = 'update_token';
+    case UPDATE_TOKEN = 'UPDATE_TOKEN';
 
     /**
     * Invalidating or expiring a token to prevent further use.
     */
-    case EXPIRE_TOKEN = 'expire_token';
+    case EXPIRE_TOKEN = 'EXPIRE_TOKEN';
 
     /**
      * Deleting a token from the gateway's system.
      */
-    case DELETE_TOKEN = 'delete_token';
+    case DELETE_TOKEN = 'DELETE_TOKEN';
 
     /**
      * Retrieving a payment link or URL for redirect-based payment flows.
      */
-    case GET_PAYMENT_LINK = 'get_payment_link';
+    case GET_PAYMENT_LINK = 'GET_PAYMENT_LINK';
 
     /**
      * Creating a new payment link or URL for redirect-based payment flows.
      */
-    case CREATE_PAYMENT_LINK = 'create_payment_link';
+    case CREATE_PAYMENT_LINK = 'CREATE_PAYMENT_LINK';
 
     /**
      * Custom Action
      */
-    case CUSTOM = 'custom';
+    case CUSTOM = 'CUSTOM';
+
+    /**
+     * Test Action
+     */
+    case TEST = 'TEST';
 }

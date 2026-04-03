@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace ArrayIterator\GatePay;
+namespace GatePay\Core;
 
-use ArrayIterator\GatePay\Enum\TransactionStatus;
-use ArrayIterator\GatePay\Interfaces\GatewayInterface;
-use ArrayIterator\GatePay\Interfaces\TransactionErrorInterface;
-use ArrayIterator\GatePay\Interfaces\TransactionInterface;
-use ArrayIterator\GatePay\Interfaces\TransactionProcessorInterface;
-use ArrayIterator\GatePay\Interfaces\TransactionResponseInterface;
+use GatePay\Core\Enum\TransactionStatus;
+use GatePay\Core\Interfaces\GatewayInterface;
+use GatePay\Core\Interfaces\TransactionErrorInterface;
+use GatePay\Core\Interfaces\TransactionInterface;
+use GatePay\Core\Interfaces\TransactionProcessorInterface;
+use GatePay\Core\Interfaces\TransactionResponseInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Log\LoggerInterface;

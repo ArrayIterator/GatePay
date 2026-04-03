@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace ArrayIterator\GatePay\Exceptions;
+namespace GatePay\Core\Exceptions;
 
-use ArrayIterator\GatePay\Enum\GatewayAction;
-use ArrayIterator\GatePay\Interfaces\GatewayInterface;
+use GatePay\Core\Enum\GatewayAction;
+use GatePay\Core\Interfaces\GatewayInterface;
 use RuntimeException;
 use Throwable;
 
@@ -18,7 +18,7 @@ class UnsupportedActionException extends RuntimeException
         int                              $code = 0,
         ?Throwable                       $previous = null
     ) {
-        $message = $message ?: "The action '{$action->value}' is not supported by the gateway '{$gateway->getName()}'.";
+        $message = $message ?: "The action '$action->value' is not supported by the gateway '{$gateway->getName()}'.";
         parent::__construct($message, $code, $previous);
     }
 

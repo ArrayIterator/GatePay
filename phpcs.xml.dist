@@ -14,7 +14,7 @@
     <!-- Extension -->
     <arg name="extensions" value="php"/>
     <!-- parallel -->
-    <arg name="parallel" value="200"/>
+    <arg name="parallel" value="1"/>
 
     <!-- Use Colorized Output -->
     <arg name="colors"/>

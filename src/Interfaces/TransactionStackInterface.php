@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace ArrayIterator\GatePay\Interfaces;
+namespace GatePay\Core\Interfaces;
 
-use ArrayIterator\GatePay\Enum\TransactionState;
+use GatePay\Core\Enum\TransactionState;
 use Psr\Log\LoggerInterface;
 
 /**

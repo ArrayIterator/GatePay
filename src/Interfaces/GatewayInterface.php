@@ -1,10 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace ArrayIterator\GatePay\Interfaces;
+namespace GatePay\Core\Interfaces;
 
-use ArrayIterator\GatePay\Enum\GatewayAction;
+use GatePay\Core\Enum\GatewayAction;
 use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
 
 /**
  * This interface defines the contract for payment adapters that can be used with the PaymentGateway.
@@ -51,7 +52,7 @@ interface GatewayInterface
      * Get the URL for the sandbox environment of the payment gateway.
      *
      * @return string Returns the sandbox URL for testing purposes.
-     * @throws \ArrayIterator\GatePay\Exceptions\UnsupportedModeException<"sandbox">
+     * @throws \GatePay\Core\Exceptions\UnsupportedModeException<"sandbox">
      * If the gateway does not support sandbox mode.
      * @noinspection PhpFullyQualifiedNameUsageInspection
      */
@@ -61,7 +62,7 @@ interface GatewayInterface
      * Get the URL for the production environment of the payment gateway.
      *
      * @return string Returns the production URL for live transactions.
-     * @throws \ArrayIterator\GatePay\Exceptions\UnsupportedModeException<"production">
+     * @throws \GatePay\Core\Exceptions\UnsupportedModeException<"production">
      * If the gateway does not support production mode.
      * @noinspection PhpFullyQualifiedNameUsageInspection
      */
@@ -90,21 +91,30 @@ interface GatewayInterface
      * @param array<array-key, mixed> $parameters
      *      Optional parameters that may be needed to retrieve the action handler.
      * @return GatewayActionInterface Returns the action handler for the specified action.
-     * @throws \ArrayIterator\GatePay\Exceptions\UnsupportedActionException
+     * @throws \GatePay\Core\Exceptions\UnsupportedActionException
      * @noinspection PhpFullyQualifiedNameUsageInspection
      */
     public function getAction(GatewayAction $action, array $parameters = []): GatewayActionInterface;
 
     /**
+     * Process a transaction using the appropriate action handler for the specified transaction.
+     * The method takes a TransactionInterface object, a RequestFactoryInterface for creating HTTP requests,
      * @param TransactionInterface $transaction
+     *     The transaction to be processed, which contains all the necessary information for processing the payment.
+     * @param RequestFactoryInterface $requestFactory
+     *      The request factory to be used for creating the HTTP request for the transaction.
      * @param ClientInterface $client
+     *      The HTTP client to be used for sending the request to the payment gateway.
      * @return TransactionProcessorInterface
+     *      Processes the transaction and returns
+     *      a TransactionProcessorInterface that contains the result of the processing.
      * @throws \Throwable
-     * @throws \ArrayIterator\GatePay\Exceptions\UnsupportedActionException
+     * @throws \GatePay\Core\Exceptions\UnsupportedActionException
      * @noinspection PhpFullyQualifiedNameUsageInspection
      */
     public function process(
         TransactionInterface $transaction,
+        RequestFactoryInterface $requestFactory,
         ClientInterface      $client
     ): TransactionProcessorInterface;
 }
