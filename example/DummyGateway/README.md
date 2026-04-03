@@ -29,7 +29,7 @@ DummyGateway/
 The main gateway class that:
 - Extends `AbstractGateway`
 - Defines gateway name as `"DummyGateway"`
-- Registers supported actions (maps `GatewayAction::CUSTOM` to `TestAction`)
+- Registers supported actions (maps `GatewayAction::TEST` to `TestAction`)
 - Overrides `prepareClient()` to use `LocalClient` instead of real HTTP client
 
 ```php
@@ -42,7 +42,7 @@ class DummyGateway extends AbstractGateway
     {
         $this->client = new LocalClient($responseFactory);
         $this->actions = [
-            GatewayAction::CUSTOM->value => TestAction::class
+            GatewayAction::TEST->value => TestAction::class
         ];
     }
 

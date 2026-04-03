@@ -34,7 +34,7 @@ class DummyGateway extends AbstractGateway
         $this->client = new LocalClient($responseFactory);
         $this->actions = [
             // use class name for lazy initialization of actions
-            GatewayAction::CUSTOM->value => TestAction::class
+            GatewayAction::TEST->value => TestAction::class
         ];
     }
 
