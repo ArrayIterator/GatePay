@@ -13,8 +13,6 @@ use Traversable;
 use function array_key_exists;
 use function count;
 use function json_decode;
-use function serialize;
-use function unserialize;
 use const JSON_THROW_ON_ERROR;
 
 /**
@@ -148,42 +146,6 @@ final class TransactionResultData implements TransactionResultDataInterface
             throw new DataFrozenException();
         }
         $this->data[$key] = $value;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function serialize(): string
-    {
-        return serialize($this->__serialize());
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function unserialize(string $data): void
-    {
-        $this->__unserialize(unserialize($data));
-    }
-
-    /**
-     * @return array{
-     *     data: array<TKey, TValue>,
-     *     frozen: bool
-     * }
-     */
-    public function __serialize(): array
-    {
-        return [
-            'data' => $this->data,
-            'frozen' => $this->frozen,
-        ];
-    }
-
-    public function __unserialize(array $data): void
-    {
-        $this->data = $data['data'] ?? [];
-        $this->frozen = $data['frozen'] ?? false;
     }
 
     /**

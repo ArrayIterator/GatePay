@@ -8,7 +8,6 @@ use GatePay\Core\Enum\GatewayAction;
 use GatePay\Core\Exceptions\UnsupportedActionException;
 use GatePay\Core\Interfaces\GatewayInterface;
 use GatePay\Core\Interfaces\TransactionInterface;
-use GatePay\Example\DummyGateway\DummyGateway;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Log\LoggerInterface;

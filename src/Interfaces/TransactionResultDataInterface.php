@@ -7,7 +7,6 @@ use Countable;
 use GatePay\Core\Enum\SourceType;
 use IteratorAggregate;
 use JsonSerializable;
-use Serializable;
 
 /**
  * This interface defines the structure for transaction result data in a payment processing system.
@@ -22,7 +21,7 @@ use Serializable;
  * @template TValue
  * @template-extends IteratorAggregate<TKey, TValue>
  */
-interface TransactionResultDataInterface extends Serializable, Countable, JsonSerializable, IteratorAggregate
+interface TransactionResultDataInterface extends Countable, JsonSerializable, IteratorAggregate
 {
     /**
      * Get the source type of the transaction data.
