@@ -30,6 +30,7 @@
     <!-- Path To Check -->
     <!-- <file>public/index.php</file>-->
     <file>src/</file>
+    <file>example/</file>
     <file>tests/</file>
     <!-- Slevomat Ruleset -->
     <config name="installed_paths" value="vendor/slevomat/coding-standard/SlevomatCodingStandard"/>

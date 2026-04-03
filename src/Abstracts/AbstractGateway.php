@@ -226,13 +226,18 @@ abstract class AbstractGateway implements GatewayInterface
      * (e.g., logging, retry logic, etc.).
      *
      * @param ClientInterface $client
+     * @param TransactionProcessorInterface $processor
      * @param LoggerInterface|null $logger
      * @return ClientInterface
+     * @throws UnsupportedActionException
+     *      if the transaction processor is not associated with this gateway,
+     *      or if the action of the transaction is not supported by this gateway.
      * @abstract
      * @noinspection PhpUnusedParameterInspection
      */
     protected function prepareClient(
         ClientInterface $client,
+        TransactionProcessorInterface $processor,
         ?LoggerInterface $logger = null
     ): ClientInterface {
         return $client;
@@ -305,14 +310,14 @@ abstract class AbstractGateway implements GatewayInterface
                 )
             );
         }
-        $request = $action->createRequest($transaction, $requestFactory, $logger);
+        $request = $action->createRequest($this, $transaction, $requestFactory, $logger);
         $processor = new TransactionProcessor(
             gateway: $this,
             transaction: $transaction,
             request: $this->prepareRequest($request, $action, $transaction, $logger)
         );
         try {
-            $client = $this->prepareClient($client, $logger);
+            $client = $this->prepareClient($client, $processor, $logger);
             $processor = $processor->process($client, $logger);
         } finally {
             return $this->postRequest($processor);

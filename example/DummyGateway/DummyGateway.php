@@ -5,6 +5,8 @@ namespace GatePay\Example\DummyGateway;
 
 use GatePay\Core\Abstracts\AbstractGateway;
 use GatePay\Core\Enum\GatewayAction;
+use GatePay\Core\Exceptions\UnsupportedActionException;
+use GatePay\Core\Interfaces\TransactionProcessorInterface;
 use GatePay\Example\DummyGateway\Actions\TestAction;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
@@ -12,9 +14,15 @@ use Psr\Log\LoggerInterface;
 
 class DummyGateway extends AbstractGateway
 {
+    /**
+     * @var string
+     */
     protected string $name = "DummyGateway";
 
-    protected ClientInterface $client;
+    /**
+     * @var LocalClient
+     */
+    protected LocalClient $client;
 
     /**
      * @param ResponseFactoryInterface $responseFactory
@@ -35,8 +43,18 @@ class DummyGateway extends AbstractGateway
      */
     protected function prepareClient(
         ClientInterface $client,
+        TransactionProcessorInterface $processor,
         ?LoggerInterface $logger = null
     ): ClientInterface {
+        if ($processor->getGateway() !== $this) {
+            throw new UnsupportedActionException(
+                $this,
+                $processor->getTransaction()->getAction(),
+                'The transaction processor is not associated with this gateway.',
+            );
+        }
+        // return the local client instead of the provided client,
+        // since this gateway uses a local client for processing transactions.
         return $this->client;
     }
 }

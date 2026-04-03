@@ -14,6 +14,18 @@ use function round;
 use function strlen;
 use function strtoupper;
 
+/**
+ * LocalClient is a dummy implementation of the ClientInterface that simulates sending HTTP requests
+ * and returns predefined responses based on the request parameters. It is designed for testing and
+ * demonstration purposes within the DummyGateway example.
+ * This can be used to simulate interactions with a payment gateway without making actual HTTP requests,
+ * allowing for easier testing and development of the gateway integration.
+ * Or used as non http remote request client for the gateway,
+ * for example if the gateway provides a local SDK or library for processing transactions,
+ * or as OFFLINE / Bank Transfer gateway that does not require real-time communication with a remote server.
+ *
+ * @see DummyGateway::$client
+ */
 class LocalClient implements ClientInterface
 {
     public function __construct(

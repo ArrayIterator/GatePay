@@ -25,7 +25,11 @@ Note: Default transaction stack [TransactionStack.php](src/TransactionStack.php)
 <?php
 declare(strict_types=1);
 
-use GatePay\Core\CreditCard;use GatePay\Core\Enum\TransactionState;use GatePay\Core\GatewayRegistry;use GatePay\Core\Transaction;use GatePay\Core\Utils\ReferenceOrderId;
+use GatePay\Core\CreditCard;
+use GatePay\Core\Enum\TransactionState;
+use GatePay\Core\GatewayRegistry;
+use GatePay\Core\Transaction;
+use GatePay\Core\Utils\ReferenceOrderId;
 
 // 1. Generate Order ID
 $orderIdGen = new ReferenceOrderId('PYMT');
@@ -37,6 +41,9 @@ $card = new CreditCard();
 $cardType = $card->guess($pan); 
 
 $registry = new GatewayRegistry();
+// register custom gateway implementation,
+// this can be done in a service provider or bootstrap file
+$registry->add(new MyCustomGateway(), 'MyCustomGateway');
 // 3. Create Transaction
 $transaction = new Transaction(
     transactionId: $orderId,
@@ -50,9 +57,16 @@ $transaction = new Transaction(
     ],
     // by default transaction stack using default
 );
-$gateway = $registry->get('PayPal');
+// create PSR-18 HTTP client and PSR-17 HTTP factory
+$httpClient = new \GuzzleHttp\Client();
+// PSR-17 HTTP Factory for creating request and response objects
+$httpResponseFactory = new \GuzzleHttp\Psr7\HttpFactory;
+$gateway = $registry->get('MyCustomGateway'); // or use MyCustomGateway::class
+
 // 4. Process payment
-$processor = $gateway->process($transaction, $httpClient);
+// use user defined client & http factory make it easier for the user to integrate with their existing HTTP client and factory implementations,
+// without forcing them to use a specific library or implementation.
+$processor = $gateway->process($transaction, $httpResponseFactory, $httpClient);
 // 5. Handle transaction result
 if ($transaction->getState() === TransactionState::ERROR) {
     // Handle error
@@ -65,3 +79,8 @@ if ($transaction->getState() === TransactionState::ERROR) {
     // Handle pending or other states
 }
 ```
+
+## How to Implement Custom Gateway
+
+Checkout the [DummyGateway](example/DummyGateway) for a complete example of how to implement a custom gateway using the registry and transaction stack.
+This is dummy gateway, it can implemented as offline payment method, or as a template for creating new gateway implementations.

@@ -50,6 +50,7 @@ interface GatewayActionInterface
     /**
      * Create and return the HTTP request that represents this payment action for a given transaction.
      *
+     * @param GatewayInterface $gateway The payment gateway for which the request is being created.
      * @param TransactionInterface $transaction The transaction for which the request is being created.
      * @param RequestFactoryInterface $requestFactory The factory to use for creating the HTTP request.
      * @param LoggerInterface|null $logger Optional logger for logging any relevant information during request creation
@@ -60,6 +61,7 @@ interface GatewayActionInterface
      * @noinspection PhpFullyQualifiedNameUsageInspection
      */
     public function createRequest(
+        GatewayInterface $gateway,
         TransactionInterface $transaction,
         RequestFactoryInterface $requestFactory,
         ?LoggerInterface $logger = null
