@@ -10,33 +10,10 @@ ensuring interoperability and flexibility in choosing HTTP client implementation
 
 ## Description
 
-For Product Reference Order Generation [**ReferenceOrderId**](src/Utils/ReferenceOrderId.php)
+- For Product Reference Order Generation [**ReferenceOrderId**](src/Utils/README.md#reference-generator) - Optimized for payment gateway use cases with prefix support and sufficient entropy, while maintaining k-sortable properties.
 
-For XML Parsing utility [**XMLParserArray**](src/Utils/README.md) - Supports SimpleXML, LibXML, and Pure PHP parsers with consistent output format.
+- For XML Parsing utility [**XMLParserArray**](src/Utils/README.md#xml-parser) - Supports SimpleXML, LibXML, and Pure PHP parsers with consistent output format.
 
-Verdict: ReferenceOrderId suitable for payment gateway rather than uuid-v7
-
-- [x] Length optimization (30 vs 36 chars)
-- [x] Product identification via prefix
-- [x] Still k-sortable like UUIDv7
-- [x] Sufficient entropy (96 bits)
-
-Example usage:
-
-```php
-<?php
-declare(strict_types=1);
-
-use GatePay\Core\Utils\ReferenceOrderId;
-
-$prefix = "INVC" 
-$orderIdGen = new ReferenceOrderId($prefix);
-
-// Generate random
-// INVC-019d43d20eb8-6a5a7925dfb5
-$referenceId = $orderIdGen->generate();
-
-```
 
 ## Integration
 

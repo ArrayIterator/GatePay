@@ -1,3 +1,29 @@
+# Reference Generator
+
+Verdict: [ReferenceOrderId](ReferenceOrderId.php) suitable for payment gateway rather than uuid-v7
+
+- [x] Length optimization (30 vs 36 chars)
+- [x] Product identification via prefix
+- [x] Still k-sortable like UUIDv7
+- [x] Sufficient entropy (96 bits)
+
+Example usage:
+
+```php
+<?php
+declare(strict_types=1);
+
+use GatePay\Core\Utils\ReferenceOrderId;
+
+$prefix = "INVC" 
+$orderIdGen = new ReferenceOrderId($prefix);
+
+// Generate random
+// INVC-019d43d20eb8-6a5a7925dfb5
+$referenceId = $orderIdGen->generate();
+
+```
+
 # XML Parser
 
 [XMLParserArray](XMLParserArray.php) is a utility class that provides methods to parse XML strings into associative arrays using three different approaches: LibXML, PureXML, and SimpleXML. Each method offers a unique way to handle XML parsing, allowing developers to choose the one that best suits their needs.
