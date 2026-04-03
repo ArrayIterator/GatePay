@@ -6,6 +6,13 @@
 
 ---
 
+Small Libraries **BIG IMPACT!**
+
+_GatePay_ is not just another payment gateway wrapper.
+It's a **deterministic, traceable, and swappable** payment processing framework designed to make your life easier.
+No need to read hundreds files of core code to understand how to process a payment. No more 3 AM debugging sessions trying to figure out why your transaction failed.
+With GatePay, you get a clear, predictable flow that works the same way for every gateway implementation.
+
 ## 😤 The Problem
 
 Every developer who has integrated payment gateways knows the pain:
@@ -23,9 +30,9 @@ Every developer who has integrated payment gateways knows the pain:
 
 ```
 Day 1: "I'll just integrate Stripe, how hard can it be?"
-Day 2: "Reading docs... why is this so complicated?"
+Day 2: "Reading docs... why is this so complicated? Harder than Stripe's API!"
 Day 5: "Why are there 15 webhook event types?"
-Day 10: "I need to support PayPal too..."
+Day 10: "I need to support PayPal too... (getting headache ....)"
 Day 20: "Everything is on fire"
 Day 30: "I should have been a farmer"
 ```
@@ -147,6 +154,8 @@ if ($transaction->getState() === TransactionState::SUCCESS) {
 }
 
 // That's it. For ALL gateways.
+// Note: If the payment gateway developer follow the standard!
+
 ```
 
 ### 📋 Built-in Traceability
@@ -197,6 +206,11 @@ use GatePay\Core\GatewayRegistry;
 use GatePay\Core\Transaction;
 use GatePay\Core\Utils\ReferenceOrderId;
 
+// the registry centralizes all your gateways, you can also add alias for easier access
+$registry = new GatewayRegistry();
+// .... any gateway registration here,
+// you can also register your gateway in a service provider or bootstrap file, it's up to you
+
 // 1️⃣ Generate unique order ID (k-sortable, prefixed) - always 30 characters, perfect for payment systems
 $orderIdGen = new ReferenceOrderId('PYMT');
 $orderId = $orderIdGen->generate(); 
@@ -218,8 +232,14 @@ $httpClient = new GuzzleHttp\Client();
 $httpFactory = new GuzzleHttp\Psr7\HttpFactory();
 
 // 4️⃣ Process - one line, any gateway
-$registry = new GatewayRegistry();
 $gateway = $registry->get('MyGateway');
+if (!$gateway->hasAction($transaction->getAction())) {
+    // maybe log or throw custom exception,
+    // but the point is you don't need to check for null or catch exception just to check if the gateway support the action,
+    // you can just do logic here and let the gateway handle it, it's more clean and less error prone
+    return;
+}
+
 $processor = $gateway->process($transaction, $httpFactory, $httpClient);
 
 // 5️⃣ Handle result - clean, predictable states
@@ -227,6 +247,7 @@ match ($transaction->getState()) {
     TransactionState::SUCCESS => fn() => saveSuccess($transaction->getTransactionResultData()),
     TransactionState::ERROR   => fn() => logError($transaction->getError()),
     TransactionState::PENDING => fn() => queueForPolling($transaction),
+    TransactionState::BEGIN   => fn() => handleProcessing($transaction),
 };
 ```
 
@@ -298,6 +319,7 @@ Payment processing should be:
 
 ---
 
+<!--suppress HtmlDeprecatedAttribute -->
 <p align="center" style="text-align: center">
   <b>Stop fighting your payment gateway. Start shipping features.</b>
   <br><br>
