@@ -8,7 +8,7 @@ Using PSR-7 and PSR-18 for HTTP client and message interfaces,
 ensuring interoperability and flexibility in choosing HTTP client implementations.
 
 
-## Description
+## Utilities
 
 - For Product Reference Order Generation [**ReferenceOrderId**](src/Utils/README.md#reference-generator) - Optimized for payment gateway use cases with prefix support and sufficient entropy, while maintaining k-sortable properties.
 
