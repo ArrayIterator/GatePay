@@ -75,8 +75,8 @@ $processor = $gateway->process($transaction, $httpFactory, $httpClient);
 match ($transaction->getState()) {
     TransactionState::SUCCESS => handleSuccess($transaction),
     TransactionState::ERROR   => handleError($transaction),
-    TransactionState::BEGIN => handleProcessing($transaction),
     TransactionState::PENDING => handlePending($transaction),
+    TransactionState::BEGIN   => handleProcessing($transaction),
 };
 ```
 
