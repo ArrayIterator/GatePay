@@ -11,3 +11,4 @@
 /.tmp export-ignore
 /tests export-ignore
 /example export-ignore
+/composer.lock export-ignore
