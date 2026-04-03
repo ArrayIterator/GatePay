@@ -74,7 +74,7 @@ if ($transaction->getState() === TransactionState::ERROR) {
     // Log or display error information
 } elseif ($transaction->getState() === TransactionState::SUCCESS) {
     // Handle success
-    $resultData = $transaction->getTransactionResultData()l
+    $resultData = $transaction->getTransactionResultData();
 } else {
     // Handle pending or other states
 }
