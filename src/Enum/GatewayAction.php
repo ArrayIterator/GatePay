@@ -8,53 +8,63 @@ enum GatewayAction: string
     // --- 1. CORE TRANSACTIONS ---
     /**
      * Direct deduction of funds from the customer's account (Sale).
+     * INIT → SUCCESS / FAILED
      */
     case CHARGE = 'CHARGE';
 
     /**
      * Processing a payment that involves customer redirection to the gateway's
      * hosted page (e.g., PayPal, Midtrans Snap).
+     * INIT → PENDING → SUCCESS / FAILED
      */
     case PURCHASE = 'PURCHASE';
 
     /**
      * Reserving/holding funds on the account without actual deduction.
+     * INIT → SUCCESS / FAILED → STATUS: AUTHORIZED
      */
     case AUTHORIZE = 'AUTHORIZE';
 
     /**
      * Capturing funds that were previously authorized.
+     * INIT → SUCCESS / FAILED → STORING: CAPTURED
      */
     case CAPTURE = 'CAPTURE';
 
     /**
      * Cancelling an authorized transaction that has not been captured yet.
+     * INIT → SUCCESS / FAILED → STATUS: VOIDED / CANCEL TRANSACTION
      */
     case VOID = 'VOID';
 
     /**
      * Returning funds to the customer.
+     * INIT → SUCCESS / FAILED
      */
     case REFUND = 'REFUND';
 
     /**
      * Cancelling a transaction that is still in a pending state.
+     * INIT → SUCCESS / FAILED → STATUS: CANCELED
      */
     case CANCEL = 'CANCEL';
 
     /**
      * Verifying the validity of a payment method without processing a charge.
+     * INIT → SUCCESS / FAILED
      */
     case VERIFY = 'VERIFY';
 
     /**
      * Forcing a transaction to expire (e.g., Virtual Accounts or time-limited links).
+     * INIT → SUCCESS / FAILED → STATUS: EXPIRED
      */
     case EXPIRE = 'EXPIRE';
 
     // --- 2. DIRECT API & PUSH PAYMENTS ---
     /**
      * Direct charge processing without customer redirection (Server-to-Server).
+     * INIT → SUCCESS / FAILED
      */
     case DIRECT_CHARGE = 'DIRECT_CHARGE';
 
@@ -257,11 +267,13 @@ enum GatewayAction: string
 
     /**
      * Retrieving a payment link or URL for redirect-based payment flows.
+     * INIT → ISSUED → PENDING → SUCCESS / EXPIRED
      */
     case GET_PAYMENT_LINK = 'GET_PAYMENT_LINK';
 
     /**
      * Creating a new payment link or URL for redirect-based payment flows.
+     * INIT → ISSUED → PENDING → SUCCESS / EXPIRED
      */
     case CREATE_PAYMENT_LINK = 'CREATE_PAYMENT_LINK';
 
