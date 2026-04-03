@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root>
+    <response>
+        <status>OK</status>
+        <code>200</code>
+        <message>Success</message>
+        <data>
+            <transactionId>1234567890</transactionId>
+            <amount>100.00</amount>
+            <currency>USD</currency>
+            <paymentMethod>CreditCard</paymentMethod>
+            <timestamp>2024-06-01T12:00:00Z</timestamp>
+        </data>
+    </response>
+</root>
