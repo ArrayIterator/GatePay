@@ -39,6 +39,13 @@ interface TransactionStackInterface
     public function getState() : TransactionState;
 
     /**
+     * Get the timestamp of when the transaction stack was created or last updated.
+     *
+     * @return int Returns the timestamp as a Unix timestamp (number of seconds since January 1, 1970).
+     */
+    public function getTimestamp(): int;
+
+    /**
      * Ensure that logging is enabled for this transaction stack.
      * This method can be used to indicate that logging should be performed for this transaction stack,
      * allowing for better traceability and debugging during the transaction processing.

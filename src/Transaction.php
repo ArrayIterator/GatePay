@@ -46,6 +46,12 @@ final class Transaction implements TransactionInterface
     private readonly TransactionStackInterface $stack;
 
     /**
+     * @var int $timestamp The timestamp when the transaction was created.
+     * This can be used for logging, debugging, or tracking purposes to determine when the transaction was initiated.
+     */
+    private int $timestamp = 0;
+
+    /**
      * Transaction constructor.
      *
      * @param string $transactionId The unique identifier for the transaction.
@@ -75,6 +81,16 @@ final class Transaction implements TransactionInterface
     public function getStack(): TransactionStackInterface
     {
         return $this->stack;
+    }
+
+    /**
+     * Get the timestamp when the transaction was created.
+     *
+     * @return int The timestamp of the transaction creation time.
+     */
+    public function getTimestamp(): int
+    {
+        return $this->timestamp;
     }
 
     /**
@@ -149,6 +165,7 @@ final class Transaction implements TransactionInterface
             return;
         }
         $this->state = TransactionState::BEGIN;
+        $this->timestamp = time();
         $this->stack->begin($processor);
     }
 

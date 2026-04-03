@@ -59,6 +59,12 @@ class TransactionStack implements TransactionStackInterface
     protected bool $enableLogging = true;
 
     /**
+     * @var int $timestamp The timestamp of when the transaction stack was created or last updated.
+     * This can be used for tracking the timing of transaction processing events or for logging purposes.
+     */
+    private int $timestamp = 0;
+
+    /**
      * Constructor
      *
      * @param Transaction $transaction
@@ -73,6 +79,14 @@ class TransactionStack implements TransactionStackInterface
     public function getState(): TransactionState
     {
         return $this->state;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getTimestamp(): int
+    {
+        return $this->timestamp;
     }
 
     /**
