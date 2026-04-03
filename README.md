@@ -12,6 +12,8 @@ ensuring interoperability and flexibility in choosing HTTP client implementation
 
 For Product Reference Order Generation [**ReferenceOrderId**](src/Utils/ReferenceOrderId.php)
 
+For XML Parsing utility [**XMLParserArray**](src/Utils/README.md) - Supports SimpleXML, LibXML, and Pure PHP parsers with consistent output format.
+
 Verdict: ReferenceOrderId suitable for payment gateway rather than uuid-v7
 
 - [x] Length optimization (30 vs 36 chars)
