@@ -38,7 +38,6 @@
         "symfony/polyfill-iconv": "^v1.33.0"
     },
     "suggest": {
-        "ext-iconv": "For character encoding conversions",
         "ext-mbstring": "For multibyte string handling",
         "ext-simplexml": "For XML parsing and manipulation",
         "ext-libxml": "For XML processing and validation",
