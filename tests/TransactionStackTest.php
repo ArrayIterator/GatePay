@@ -15,6 +15,7 @@ use GatePay\Core\Interfaces\TransactionStackInterface;
 use GatePay\Core\Transaction;
 use GatePay\Core\TransactionStack;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
@@ -875,7 +876,7 @@ class TransactionStackTest extends TestCase
         return new Transaction($id, GatewayAction::CHARGE, [], $mockStack);
     }
 
-    private function createMockProcessor(Transaction $transaction): TransactionProcessorInterface
+    private function createMockProcessor(Transaction $transaction): TransactionProcessorInterface&MockObject
     {
         $processor = $this->createMock(TransactionProcessorInterface::class);
         $processor->method('getTransaction')->willReturn($transaction);
