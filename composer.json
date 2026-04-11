@@ -2,7 +2,7 @@
     "name": "gatepay/core",
     "description": "Deterministic Payment Gateway Transaction Transport",
     "type": "library",
-    "homepage": "https://github.com/arrayiterator/gatepay",
+    "homepage": "https://github.com/TrayDigita/GatePay-Core",
     "license": "MIT",
     "prefer-stable": true,
     "keywords": [
@@ -33,7 +33,7 @@
         "squizlabs/php_codesniffer": "^4.0.1",
         "phpunit/phpunit": "^10.5",
         "guzzlehttp/guzzle": "7.10.0",
-        "arrayiterator/credit-card": "^1.1",
+        "gatepay/credit-card": "^1",
         "symfony/polyfill-mbstring": "^v1.33.0",
         "symfony/polyfill-iconv": "^v1.33.0"
     },
@@ -41,8 +41,13 @@
         "ext-mbstring": "For multibyte string handling",
         "ext-simplexml": "For XML parsing and manipulation",
         "ext-libxml": "For XML processing and validation",
-        "arrayiterator/credit-card": "For credit card validation and formatting",
+        "gatepay/credit-card": "For credit card validation and formatting",
         "guzzlehttp/guzzle": "For PSR-18 HTTP client implementation"
+    },
+    "scripts": {
+        "test": "./vendor/bin/phpunit --config=phpunit.xml.dist",
+        "lint": "./vendor/bin/phpcs --standard=phpcs.xml.dist",
+        "analyse": "./vendor/bin/phpstan --configuration=phpstan.neon"
     },
     "config": {
         "allow-plugins": {
