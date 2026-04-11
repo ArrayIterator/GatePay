@@ -18,7 +18,7 @@ use Psr\Log\LoggerInterface;
  * It implements the TransactionInterface and provides methods to manage the transaction lifecycle,
  * including beginning the transaction, handling successful responses, catching errors, and finalizing the transaction.
  */
-final class Transaction implements TransactionInterface
+class Transaction implements TransactionInterface
 {
     /**
      * @var TransactionResponseInterface|null
