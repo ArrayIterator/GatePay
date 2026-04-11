@@ -514,6 +514,7 @@ class TransactionStackTest extends TestCase
         $this->advanceStackToSuccess($transaction, $stack);
         $this->driveTransactionToFinal($transaction, TransactionStatus::SUCCESS);
 
+        /** @noinspection HtmlUnknownAttribute */
         $httpResponse = $this->createMockHttpResponse('application/xml', '<<<not xml>>>');
         $transactionResponse = $this->createMock(TransactionResponseInterface::class);
         $transactionResponse->method('getResponse')->willReturn($httpResponse);
