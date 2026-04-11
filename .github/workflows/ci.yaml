@@ -1,4 +1,4 @@
-name: PHP CI
+name: GatePay PHP CI
 on:
   push:
   pull_request:
