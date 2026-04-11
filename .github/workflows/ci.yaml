@@ -50,10 +50,19 @@ jobs:
         run: ./vendor/bin/phpunit --config=phpunit.xml.dist
 
       - name: Upload coverage reports & JUnit to Codecov
+        if: ${{ !cancelled() }}
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           slug: TrayDigita/GatePay-Core
-          files: ./.tmp/phpunit/coverage.xml,.tmp/phpunit/junit.xml
+          files: ./.tmp/phpunit/coverage.xml
+          fail_ci_if_error: false
+          verbose: true
+      - name: Upload test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: .tmp/phpunit/junit.xml
           fail_ci_if_error: false
           verbose: true
