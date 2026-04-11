@@ -2,7 +2,7 @@
 .idea/
 .vscode/
 *.swp
-*.swo
+.wget-hsts
 *~
 
 # OS
@@ -15,6 +15,7 @@ Thumbs.db
 # Specific Directories
 vendor/
 .tmp/
+node_modules/
 
 # Lock
 *.lock
