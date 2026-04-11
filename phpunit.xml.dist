@@ -30,6 +30,9 @@
             <text outputFile="php://stdout" showUncoveredFiles="true" showOnlySummary="true"/>
         </report>
     </coverage>
+    <logging>
+        <junit outputFile=".tmp/phpunit/junit.xml"/>
+    </logging>
     <php>
         <ini name="error_reporting" value="-1"/>
         <ini name="display_errors" value="On"/>

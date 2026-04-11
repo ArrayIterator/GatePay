@@ -49,11 +49,11 @@ jobs:
       - name: PHPUnit with Coverage
         run: ./vendor/bin/phpunit --config=phpunit.xml.dist
 
-      - name: Upload coverage reports to Codecov
+      - name: Upload coverage reports & JUnit to Codecov
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           slug: TrayDigita/GatePay-Core
-          files: ./.tmp/phpunit/coverage.xml
+          files: ./.tmp/phpunit/coverage.xml,.tmp/phpunit/junit.xml
           fail_ci_if_error: false
           verbose: true
