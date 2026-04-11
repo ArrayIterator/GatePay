@@ -26,7 +26,7 @@ use const JSON_THROW_ON_ERROR;
  * @template TValue of mixed
  * @template-implements TransactionResultDataInterface<TKey, TValue>
  */
-final class TransactionResultData implements TransactionResultDataInterface
+class TransactionResultData implements TransactionResultDataInterface
 {
     /**
      * @var array<TKey, TValue> $data The transaction data stored as an associative array.
