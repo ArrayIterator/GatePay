@@ -10,9 +10,10 @@
          displayDetailsOnSkippedTests="true"
          displayDetailsOnTestsThatTriggerWarnings="true"
          failOnWarning="true"
+         testdox="true"
 >
     <testsuites>
-        <testsuite name="GatePay Tests">
+        <testsuite name="GatePay Core Tests">
             <directory>tests</directory>
         </testsuite>
     </testsuites>
