@@ -127,7 +127,7 @@ class XMLParserArray
      *
      * @param string $xml
      * @return array<array-key, mixed>
-     * @throws \Throwable
+     * @throws ParseError
      */
     public static function parse(string $xml): array
     {
@@ -205,6 +205,10 @@ class XMLParserArray
 
         $values = [];
         $index = [];
+        /**
+         * @noinspection PhpUnusedLocalVariableInspection
+         * Index is used
+         */
         if (!@xml_parse_into_struct($parser, $xml, $values, $index)) {
             $error = xml_error_string(xml_get_error_code($parser));
             xml_parser_free($parser);
@@ -321,8 +325,12 @@ class XMLParserArray
         $attributes = [];
 
         // Extract attributes
+        /**
+         * @noinspection PhpLoopCanBeConvertedToArrayMapInspection
+         * casting array from loop is not good
+         */
         foreach ($xmlObject->attributes() as $attrName => $attrValue) {
-            $attributes[(string)$attrName] = (string)$attrValue;
+            $attributes[$attrName] = (string)$attrValue;
         }
 
         if (count($children) === 0) {
@@ -383,7 +391,7 @@ class XMLParserArray
 
         // Match attributes in format: name="value" or name='value'
         if (preg_match_all(
-            '/([a-zA-Z_:][\w:.-]*)\s*=\s*(?:"([^"]*)"|\'([^\']*)\')/s',
+            '/([a-zA-Z_:][\w:.-]*)\s*=\s*(?:"([^"]*)"|\'([^\']*)\')/', //s
             $attrString,
             $matches,
             PREG_SET_ORDER
@@ -435,17 +443,17 @@ class XMLParserArray
         $xml = trim($xml);
 
         $iteration = 0;
-        $previousLength = null;
+        // $previousLength = null;
 
         while ($xml !== '' && $iteration < self::$maxIterations) {
             $iteration++;
-            $currentLength = strlen($xml);
-
+            // dead branch - length checks are not needed with proper tag matching and substring removal
+            //$currentLength = strlen($xml);
             // Detect infinite loop - if length hasn't changed
-            if ($previousLength === $currentLength) {
-                break;
-            }
-            $previousLength = $currentLength;
+            //if ($previousLength === $currentLength) {
+            //    break;
+            //}
+            //$previousLength = $currentLength;
 
             // Pre-process CDATA sections before parsing
             $xmlProcessed = self::processCDATA($xml);
@@ -488,7 +496,7 @@ class XMLParserArray
                 // Remove the matched portion from the original XML (not processed)
                 $xml = substr($xml, strlen($fullMatch));
                 $xml = trim($xml);
-            } elseif (preg_match('/^<([^>\/\s]+)([^>]*)\/>/s', $xmlProcessed, $matches)) {
+            } elseif (preg_match('/^<([^>\/\s]+)([^>]*)\/>/', $xmlProcessed, $matches)) { //s
                 // Try to match self-closing tags
                 $tagName = $matches[1];
                 $attrString = $matches[2];
@@ -560,7 +568,7 @@ class XMLParserArray
 
         $placeholder = preg_quote(self::$currentCDATAPlaceholder, '~'); // Escape special chars
         $data = preg_replace_callback(
-            "~{$placeholder}(\d+)___~",
+            "~$placeholder(\d+)___~",
             function ($matches) {
                 $placeholder = $matches[0];
                 return self::$cdataStore[$placeholder] ?? $placeholder;
