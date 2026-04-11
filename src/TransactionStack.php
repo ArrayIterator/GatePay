@@ -16,6 +16,7 @@ use Throwable;
 use function in_array;
 use function is_array;
 use function preg_match;
+use function time;
 
 /**
  * DefaultTransactionStack is a default implementation of the TransactionStackInterface.
@@ -59,7 +60,7 @@ class TransactionStack implements TransactionStackInterface
     protected bool $enableLogging = true;
 
     /**
-     * @var int $timestamp The timestamp of when the transaction stack was created or last updated.
+     * @var int $timestamp The timestamp of when the transaction stack was begin!.
      * This can be used for tracking the timing of transaction processing events or for logging purposes.
      */
     private int $timestamp = 0;
@@ -153,6 +154,7 @@ class TransactionStack implements TransactionStackInterface
         )) {
             return;
         }
+        $this->timestamp = time();
         $this->state = TransactionState::BEGIN;
         $this->onStart($processor, $logger);
     }
@@ -225,15 +227,12 @@ class TransactionStack implements TransactionStackInterface
     /**
      * Check if the response is a JSON response based on the Content-Type header.
      *
-     * @param ?ResponseInterface $response The HTTP response to check.
+     * @param ResponseInterface $response The HTTP response to check.
      * @return ?SourceType Returns true if the response is a JSON response,
      * false otherwise.
      */
-    protected function detectSourceType(?ResponseInterface $response): ?SourceType
+    protected function detectSourceType(ResponseInterface $response): ?SourceType
     {
-        if (!$response) {
-            return null;
-        }
         $contentType = $response->getHeaderLine('Content-Type');
         if ($contentType === '') {
             return null;
