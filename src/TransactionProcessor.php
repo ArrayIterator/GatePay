@@ -22,7 +22,7 @@ class TransactionProcessor implements TransactionProcessorInterface
     /**
      * @var TransactionStatus $status The current status of the transaction.
      */
-    private TransactionStatus $status;
+    private TransactionStatus $status = TransactionStatus::PENDING;
 
     /**
      * @var TransactionResponseInterface|null $response
@@ -114,7 +114,7 @@ class TransactionProcessor implements TransactionProcessorInterface
         ClientInterface $client,
         ?LoggerInterface $logger = null
     ) : TransactionProcessorInterface {
-        if ($this->getTransactionStatus()->isPending()) {
+        if (!$this->getTransactionStatus()->isPending()) {
             return $this;
         }
         try {
