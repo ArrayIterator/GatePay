@@ -251,11 +251,7 @@ class Utf8
                 case "\xC0":
                 case "\xD0":
                     $c = (ord($string[$i] & "\x1F") << 6) | ord($string[++$i] & "\x3F");
-                    if ($c >= 0 && $c <= 255) {
-                        $string[$j] = chr($c);
-                    } else {
-                        $string[$j] = $c < 256 ? chr($c & 0xFF) : '?';
-                    }
+                    $string[$j] = ($c >= 0 && $c <= 255) ? chr($c) : ($c < 256 ? chr($c & 0xFF) : '?');
                     // $string[$j] = $c < 256 ? chr($c) : '?';
                     break;
                 case "\xF0":
