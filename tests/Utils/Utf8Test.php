@@ -419,6 +419,15 @@ class Utf8Test extends TestCase
     }
 
     #[Test]
+    public function isUtf8WithoutMbStringRejectsInvalid3ByteSecondContinuationByte(): void
+    {
+        $this->resetMbStringCache(false);
+
+        $this->assertFalse(Utf8::isUtf8("\xE2\x00\x80"));
+        $this->assertFalse(Utf8::isUtf8("\xE2\xFF\x80"));
+    }
+
+    #[Test]
     public function isUtf8WithoutMbStringRejectsInvalid3ByteThirdContinuationByte(): void
     {
         $this->resetMbStringCache(false);
