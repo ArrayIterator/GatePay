@@ -261,16 +261,16 @@
         },
         {
             "name": "gatepay/credit-card",
-            "version": "1.0.0",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/TrayDigita/GatePay-CreditCard.git",
-                "reference": "e7bd316f38db94183668065e370fd9238b609313"
+                "reference": "207e392a7ef860ece05bb7982d9ea28e83af3062"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TrayDigita/GatePay-CreditCard/zipball/e7bd316f38db94183668065e370fd9238b609313",
-                "reference": "e7bd316f38db94183668065e370fd9238b609313",
+                "url": "https://api.github.com/repos/TrayDigita/GatePay-CreditCard/zipball/207e392a7ef860ece05bb7982d9ea28e83af3062",
+                "reference": "207e392a7ef860ece05bb7982d9ea28e83af3062",
                 "shasum": ""
             },
             "require": {
@@ -309,7 +309,7 @@
             ],
             "support": {
                 "issues": "https://github.com/TrayDigita/GatePay-CreditCard/issues",
-                "source": "https://github.com/TrayDigita/GatePay-CreditCard/tree/1.0.0"
+                "source": "https://github.com/TrayDigita/GatePay-CreditCard/tree/1.0.1"
             },
             "funding": [
                 {
@@ -321,7 +321,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-04-03T15:37:54+00:00"
+            "time": "2026-04-11T23:07:21+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
