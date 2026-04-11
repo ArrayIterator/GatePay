@@ -71,9 +71,6 @@ class TransactionError implements TransactionErrorInterface
      */
     public function isHttpError(): bool
     {
-        if ($this->exception instanceof RequestException) {
-            return true;
-        }
         if ($this->exception instanceof TransactionException) {
             $previous = $this->exception->getPrevious();
             if ($previous instanceof RequestException) {
