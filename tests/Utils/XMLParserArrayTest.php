@@ -35,21 +35,21 @@ class XMLParserArrayTest extends TestCase
     {
         Closure::bind(function (?bool $available) {
             self::$extSimpleXMLElementAvailable = $available;
-        }, ($this->parser ??=new XMLParserArray()), XMLParserArray::class)($available);
+        }, ($this->parser ??= new XMLParserArray()), XMLParserArray::class)($available);
     }
 
     private function markLibXMLElementAvailable(?bool $available): void
     {
         Closure::bind(function (?bool $available) {
             self::$extLibXMLAvailable = $available;
-        }, ($this->parser ??=new XMLParserArray()), XMLParserArray::class)($available);
+        }, ($this->parser ??= new XMLParserArray()), XMLParserArray::class)($available);
     }
 
     private function markExtXMLElementAvailable(?bool $available): void
     {
         Closure::bind(function (?bool $available) {
             self::$extXMLAvailable = $available;
-        }, ($this->parser ??=new XMLParserArray()), XMLParserArray::class)($available);
+        }, ($this->parser ??= new XMLParserArray()), XMLParserArray::class)($available);
     }
 
     private function setMaxIterations(int $value): void
@@ -188,6 +188,20 @@ class XMLParserArrayTest extends TestCase
 
         $this->assertArrayHasKey('root', $result);
         $this->assertSame(['value', 'second'], $result['root']['item']);
+
+        $xml = '<root><item>value</item><item name="value">second</item></root>';
+        $result = XMLParserArray::parse($xml);
+
+        $this->assertArrayHasKey('root', $result);
+        $this->assertSame([
+            'value',
+            [
+                '@attributes' => [
+                    'name' => 'value'
+                ],
+                '@value' => 'second'
+            ]
+        ], $result['root']['item']);
     }
 
     #[Test]
