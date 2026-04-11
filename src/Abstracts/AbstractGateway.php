@@ -31,6 +31,8 @@ use function trim;
  * AbstractGateway provides a base implementation of the GatewayInterface.
  * It includes common functionality for handling payment actions and processing transactions.
  * Concrete payment gateways can extend this class and implement the specific details for each action.
+ *
+ * @template Action of GatewayAction
  */
 abstract class AbstractGateway implements GatewayInterface
 {
@@ -51,7 +53,7 @@ abstract class AbstractGateway implements GatewayInterface
     protected ?string $version = null;
 
     /**
-     * @var array<value-of<GatewayAction>, GatewayActionInterface|class-string<GatewayActionInterface>> $actions
+     * @var array<value-of<Action>, GatewayActionInterface<Action>|class-string<GatewayActionInterface<Action>>>
      * The list of supported actions for this gateway.
      * This should be defined in the concrete implementation of the gateway.
      */
@@ -83,14 +85,14 @@ abstract class AbstractGateway implements GatewayInterface
         // eg: "PayPalExpressGateway" => "PayPal Express Gateway"
         // eg: PayPal_Express_Gateway => "PayPal Express Gateway"
         $name = str_replace('_', ' ', $name);
-        $spacedName = preg_replace_callback(
+        $spacedName = (string) preg_replace_callback(
             '/([a-z])([A-Z])/',
             function ($matches) {
                 return $matches[1] . ' ' . $matches[2];
             },
             $name
         );
-        return $this->name = trim(preg_replace('/\s+/', ' ', $spacedName));
+        return $this->name = trim((string) preg_replace('/\s+/', ' ', $spacedName));
     }
 
     /**
@@ -101,6 +103,9 @@ abstract class AbstractGateway implements GatewayInterface
         $actions = [];
         foreach ($this->actions as $action => $_handler) {
             $action = GatewayAction::tryFrom(strtoupper($action));
+            /**
+             * @var GatewayAction|null $action
+             */
             if ($action) {
                 $actions[] = $action;
             }
@@ -188,8 +193,8 @@ abstract class AbstractGateway implements GatewayInterface
 
     /**
      * @inheritdoc
-     * @template T of GatewayActionInterface
-     * @return T
+     * @param GatewayAction $action
+     * @return GatewayActionInterface<GatewayAction>
      *
      * @note
      * Override tbhis method if you want to pass parameters to the action handlers.
@@ -208,13 +213,19 @@ abstract class AbstractGateway implements GatewayInterface
             );
         }
         if (!is_object($this->actions[$action->value])) {
-            /**
-             * @var class-string<GatewayActionInterface> $className
-             */
             $className = $this->actions[$action->value];
-            $this->actions[$action->value] = new $className($this);
+            /**
+             * @var class-string<GatewayActionInterface<GatewayAction>> $className
+             */
+            $object = new $className($this);
+            /**
+             * @var GatewayActionInterface<Action> $object
+             */
+            $this->actions[$action->value] = $object;
         }
-        /** @var T $action */
+        /**
+         * @var GatewayActionInterface<GatewayAction> $action
+         */
         $action = $this->actions[$action->value];
         return $action;
     }
@@ -248,14 +259,14 @@ abstract class AbstractGateway implements GatewayInterface
      *
      * @param TransactionProcessorInterface $processor
      * @param LoggerInterface|null $logger
-     * @return TransactionProcessor
+     * @return TransactionProcessorInterface
      * @abstract
      * @noinspection PhpUnusedParameterInspection
      */
     protected function postRequest(
         TransactionProcessorInterface $processor,
         ?LoggerInterface $logger = null
-    ): TransactionProcessor {
+    ): TransactionProcessorInterface {
         // You can implement any post-processing logic here,
         // such as logging, updating transaction status, etc.
         return $processor;
@@ -266,7 +277,7 @@ abstract class AbstractGateway implements GatewayInterface
      * For example adding authentication, manipulating headers, etc.
      *
      * @param RequestInterface $request
-     * @param GatewayActionInterface $actionHandler
+     * @param GatewayActionInterface<GatewayAction> $actionHandler
      * @param TransactionInterface $transaction
      * @param LoggerInterface|null $logger
      * @return RequestInterface

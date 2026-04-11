@@ -66,10 +66,11 @@ class TransactionResultData implements TransactionResultDataInterface
 
     /**
      * Create a TransactionResultData instance from a JSON string.
-     *
+     * @param string $json
+     * @return TransactionResultData<TKey, TValue>
      * @throws \JsonException
      */
-    public static function fromJson(string $json): self
+    public static function fromJson(string $json): TransactionResultData
     {
         $json = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
         return new self(SourceType::JSON, $json);
@@ -77,10 +78,10 @@ class TransactionResultData implements TransactionResultDataInterface
 
     /**
      * Create a TransactionResultData instance from a JSON string.
-     *
+     * @return TransactionResultData<TKey, TValue>
      * @throws \Throwable
      */
-    public static function fromXML(string $xml): self
+    public static function fromXML(string $xml): TransactionResultData
     {
         return new self(SourceType::XML, XMLParserArray::parse($xml));
     }
@@ -111,6 +112,7 @@ class TransactionResultData implements TransactionResultDataInterface
 
     /**
      * @inheritdoc
+     * @return TValue|null
      */
     public function get(int|string $key): mixed
     {
@@ -130,8 +132,9 @@ class TransactionResultData implements TransactionResultDataInterface
 
     /**
      * @inheritdoc
+     * @return TransactionResultData<TKey, TValue>
      */
-    public function freeze(): self
+    public function freeze(): TransactionResultData
     {
         $this->frozen = true;
         return $this;
@@ -158,6 +161,7 @@ class TransactionResultData implements TransactionResultDataInterface
 
     /**
      * @inheritdoc
+     * @return array<TKey, TValue>
      */
     public function jsonSerialize(): array
     {

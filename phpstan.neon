@@ -3,6 +3,7 @@ parameters:
     level: 8
     paths:
         - src
+    treatPhpDocTypesAsCertain: false
     # Keep cache out of /.tmp to avoid stale state across environments.
     tmpDir: .tmp/phpstan
     fileExtensions:

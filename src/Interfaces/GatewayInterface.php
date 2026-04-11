@@ -86,11 +86,11 @@ interface GatewayInterface
 
     /**
      * Get the action handler for a specific payment action.
-     *
-     * @param GatewayAction $action
+     * @template T of GatewayAction
+     * @param T $action
      * @param array<array-key, mixed> $parameters
      *      Optional parameters that may be needed to retrieve the action handler.
-     * @return GatewayActionInterface Returns the action handler for the specified action.
+     * @return GatewayActionInterface<T> Returns the action handler for the specified action.
      * @throws \GatePay\Core\Exceptions\UnsupportedActionException
      * @noinspection PhpFullyQualifiedNameUsageInspection
      */

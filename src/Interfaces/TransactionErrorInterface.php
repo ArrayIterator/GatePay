@@ -9,8 +9,6 @@ use GatePay\Core\Exceptions\TransactionException;
  * This interface defines the contract for the result of a transaction processed by a payment gateway.
  * It requires implementing classes to provide methods to determine if the transaction was successful,
  * retrieve any error messages, and access additional data related to the transaction result.
- *
- * @template T of TransactionException
  */
 interface TransactionErrorInterface
 {

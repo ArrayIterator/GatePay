@@ -58,9 +58,9 @@ class Utf8
             "\x15", "\x16", "\x17", "\x18", "\x19", "\x1A", "\x1B", "\x1C", "\x1D",
             "\x1E", "\x1F"
         ];
-        $string = str_replace($control_characters, '', $string);
+        $string = (string) str_replace($control_characters, '', $string);
         if ($slash_zero) {
-            $string = preg_replace('/\\\\+0+/', '', $string);
+            $string = (string)preg_replace('/\\\\+0+/', '', $string);
         }
 
         return $string;
@@ -70,11 +70,11 @@ class Utf8
      * Deeply replace all occurrences of the search string with an empty string until no more occurrences are found.
      * This is useful for removing all instances of a substring, even if they are nested or repeated multiple times.
      *
-     * @param $search
+     * @param string|string[] $search
      * @param string $subject
-     * @return string|string[]
+     * @return string
      */
-    public static function deepReplace($search, string $subject): array|string
+    public static function deepReplace(array|string $search, string $subject): string
     {
         $count = 1;
         $maxIterations = 256; // Prevent infinite loops
@@ -111,7 +111,7 @@ class Utf8
             | (?<=[\xF0-\xF4])[\x80-\xBF](?![\x80-\xBF]{2}) # Short 4 byte sequence
             | (?<=[\xF0-\xF4][\x80-\xBF])[\x80-\xBF](?![\x80-\xBF]) # Short 4 byte sequence (2)
         )/x';
-        return preg_replace_callback(
+        return (string) preg_replace_callback(
             $regex,
             static fn($e) => self::pureBinaryFallback($e[1]),
             $data
@@ -215,11 +215,10 @@ class Utf8
                 if ($c > 0xF4) {
                     return false;
                 }
-
                 if ((ord($string[++$i]) & 0xC0) !== 0x80) {
                     return false;
                 }
-                if ((ord($string[++$i]) & 0xC0) !== 0x80) {
+                if ((ord($string[++$i]) & 0xC0) !== 0x80) { // @phpstan-ignore-line
                     return false;
                 }
             } else {
@@ -282,7 +281,11 @@ class Utf8
         if (self::isMbStringAvailable()) {
             return mb_check_encoding($string, 'UTF-8')
                 ? $string
-                : mb_convert_encoding($string, 'UTF-8', mb_detect_encoding($string, null, true) ?: 'ISO-8859-1');
+                : (mb_convert_encoding(
+                    $string,
+                    'UTF-8',
+                    mb_detect_encoding($string, null, true) ?: 'ISO-8859-1'
+                )?:(self::encodeFallback($string)));
         }
         if (self::isUtf8($string)) {
             return $string;

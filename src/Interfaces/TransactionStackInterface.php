@@ -28,6 +28,8 @@ use Psr\Log\LoggerInterface;
  * This allows for a flexible and robust transaction processing flow,
  * ensuring that all necessary steps are taken to maintain data integrity,
  * handle errors effectively, and perform any required finalization tasks after the transaction is
+ * @template TKey of array-key
+ * @template TValue
  */
 interface TransactionStackInterface
 {
@@ -166,8 +168,7 @@ interface TransactionStackInterface
      *
      * We don't use method name `getData` cause it was different strategy for data management,
      * and it can be confusing with the `parameters` property of the transaction.
-     *
-     * @return TransactionResultDataInterface|null Returns an object
+     * @return TransactionResultDataInterface<TKey, TValue>|null Returns an object
      * `    containing transaction data, or null if no additional data is available.
      */
     public function getTransactionResultData(): ?TransactionResultDataInterface;

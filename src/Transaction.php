@@ -40,7 +40,7 @@ class Transaction implements TransactionInterface
     private TransactionState $state = TransactionState::PENDING;
 
     /**
-     * @var TransactionStackInterface $stack transaction stack that can be used to manage
+     * @var TransactionStackInterface<array-key, mixed> $stack transaction stack that can be used to manage
      * the transaction processing flow and handle callbacks for different stages of the transaction lifecycle.
      */
     private readonly TransactionStackInterface $stack;
@@ -54,10 +54,12 @@ class Transaction implements TransactionInterface
     /**
      * Transaction constructor.
      *
-     * @param string $transactionId The unique identifier for the transaction.
+     * @param non-empty-string $transactionId The unique identifier for the transaction.
      * @param GatewayAction $action The action to be performed for this transaction (e.g., charge, refund).
-     * @param array $parameters Optional parameters associated with the transaction, such as amount, currency, etc.
-     * @param ?TransactionStackInterface $stack An optional transaction stack that can be used to manage
+     * @param array<array-key, mixed> $parameters Optional parameters associated with the transaction,
+     * such as amount, currency, etc.
+     * @param ?TransactionStackInterface<array-key, mixed> $stack
+     * An optional transaction stack that can be used to manage
      * the transaction processing flow and handle callbacks for different stages of the transaction lifecycle.
      */
     public function __construct(
@@ -76,7 +78,8 @@ class Transaction implements TransactionInterface
     /**
      * Get inner transaction stack instance.
      *
-     * @return TransactionStackInterface
+     * @return TransactionStackInterface<array-key, mixed>
+     *     The transaction stack instance associated with this transaction.
      */
     public function getStack(): TransactionStackInterface
     {

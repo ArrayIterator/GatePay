@@ -8,6 +8,7 @@ use GatePay\Core\Enum\GatewayAction;
 /**
  * This interface defines the contract for a transaction that can be processed by a payment gateway.
  * It requires implementing classes to provide a method to retrieve the specific action associated with the transaction.
+ * @template-extends TransactionStackInterface<array-key, mixed>
  */
 interface TransactionInterface extends TransactionStackInterface
 {

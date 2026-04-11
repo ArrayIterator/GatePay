@@ -24,6 +24,10 @@ use function time;
  * including handling the beginning of the transaction,
  * processing successful responses, catching errors,
  * and finalizing the transaction by extracting result data from the response.
+ *
+ * @template TKey of array-key
+ * @template TValue
+ * @template-implements TransactionStackInterface<TKey, TValue>
  */
 class TransactionStack implements TransactionStackInterface
 {
@@ -45,7 +49,7 @@ class TransactionStack implements TransactionStackInterface
     private TransactionState $state = TransactionState::PENDING;
 
     /**
-     * @var TransactionResultDataInterface|null $transactionResultData
+     * @var TransactionResultDataInterface<TKey, TValue>|null $transactionResultData
      * The result data of the transaction processing,
      * which may include additional information about the transaction outcome.
      */
@@ -110,7 +114,8 @@ class TransactionStack implements TransactionStackInterface
      * Check if the transaction can be processed based on the current state and the expected previous state.
      *
      * @param TransactionState $processState The state that the transaction is trying to transition to.
-     * @param TransactionState|array $prevState The expected previous state(s) that the transaction should be in
+     * @param TransactionState|array<array-key, TransactionState> $prevState
+     *      The expected previous state(s) that the transaction should be in
      * before transitioning to the new state.
      * @param TransactionProcessorInterface $processor The transaction processor containing the transaction details.
      * @param LoggerInterface|null $logger An optional logger for logging any warnings or errors during the process.
@@ -138,7 +143,7 @@ class TransactionStack implements TransactionStackInterface
         }
         return $transaction->getState() === $processState && (
             is_array($prevState) ? in_array($this->state, $prevState) : $this->state === $prevState
-            );
+        );
     }
 
     /**
@@ -252,6 +257,7 @@ class TransactionStack implements TransactionStackInterface
 
     /**
      * @inheritdoc
+     * @return TransactionResultDataInterface<TKey, TValue>
      */
     final public function getTransactionResultData(): ?TransactionResultDataInterface
     {
@@ -267,7 +273,7 @@ class TransactionStack implements TransactionStackInterface
      * log any errors or warnings during the parsing process,
      * such as issues with reading the response body or decoding it as JSON, XML, or YAML.
      *
-     * @return ?TransactionResultDataInterface
+     * @return ?TransactionResultDataInterface<TKey, TValue>
      * Returns the parsed transaction result data if successful, null otherwise.
      *
      * @abstract
@@ -333,6 +339,7 @@ class TransactionStack implements TransactionStackInterface
      * logger that can be used to log information about the transaction processing,
      * such as the transaction details, any relevant information,
      * or any other necessary logging during the start of the transaction processing.
+     * @return void
      *
      * @note
      * This method can be used to perform any necessary actions before the transaction is processed,
@@ -344,7 +351,7 @@ class TransactionStack implements TransactionStackInterface
     protected function onStart(
         TransactionProcessorInterface $processor,
         ?LoggerInterface              $logger = null
-    ) {
+    ) : void {
     }
 
     /**
@@ -360,6 +367,7 @@ class TransactionStack implements TransactionStackInterface
      * @param LoggerInterface|null $logger An optional logger that can be used to log information about
      * the successful transaction processing, such as the transaction result, any relevant details,
      * or any other necessary logging during the handling of a successful transaction.
+     * @return void
      *
      * @note
      * This method can be used to perform any necessary actions after a successful transaction processing,
@@ -372,7 +380,7 @@ class TransactionStack implements TransactionStackInterface
         TransactionResponseInterface  $result,
         TransactionProcessorInterface $processor,
         ?LoggerInterface              $logger = null
-    ) {
+    ) : void {
     }
 
     /**
@@ -387,6 +395,7 @@ class TransactionStack implements TransactionStackInterface
      * @param LoggerInterface|null $logger An optional logger that can be used to log information about
      * the error that occurred during the transaction processing, such as the error details, any relevant information,
      * or any other necessary logging during the handling of a failed transaction.
+     * @return void
      *
      * @note
      * This method can be used to handle any errors that occur during the transaction processing,
@@ -399,7 +408,7 @@ class TransactionStack implements TransactionStackInterface
         TransactionErrorInterface     $error,
         TransactionProcessorInterface $processor,
         ?LoggerInterface              $logger = null
-    ) {
+    ) : void {
     }
 
     /**
@@ -422,12 +431,12 @@ class TransactionStack implements TransactionStackInterface
      * any necessary cleanup tasks regardless of the outcome of the transaction.
      * It ensures that all necessary steps are taken to finalize the transaction processing flow,
      * allowing for proper handling and logging of the final state of the transaction.
-     *
+     * @return void
      * @abstract
      */
     protected function onFinish(
         TransactionProcessorInterface $processor,
         ?LoggerInterface              $logger = null
-    ) {
+    ) : void {
     }
 }

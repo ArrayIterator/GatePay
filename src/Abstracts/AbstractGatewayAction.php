@@ -18,6 +18,8 @@ use const E_WARNING;
  * It includes common functionality for handling a specific payment action and creating requests for transactions.
  * Concrete gateway actions can extend this class and implement the specific details for each action.
  *
+ * @template Action of GatewayAction
+ * @template-implements GatewayActionInterface<Action>
  * @template Gateway of GatewayInterface
  */
 abstract class AbstractGatewayAction implements GatewayActionInterface

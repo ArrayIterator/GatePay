@@ -234,9 +234,9 @@ class XMLParserArray
         if ($xml === '') {
             return [];
         }
-        $xml = preg_replace('/<!--.*?-->/s', '', $xml); // Remove XML comments
+        $xml = (string) (preg_replace('/<!--.*?-->/s', '', $xml)?:$xml); // Remove XML comments
         // clean up XML string by removing XML declaration and comments to prevent parsing issues
-        $xml = preg_replace('/<\?xml[^>]*\?>/i', '', $xml);
+        $xml = (string) preg_replace('/<\?xml[^>]*\?>/i', '', $xml);
         return self::pureXMLParser($xml);
     }
 
@@ -249,8 +249,8 @@ class XMLParserArray
      * - Text content is stored in '@value' key
      * - Child elements are stored with their tag names as keys
      *
-     * @param array $values
-     * @return array
+     * @param array<array-key, mixed> $values
+     * @return array<array-key, mixed>
      */
     private static function parseStructArray(array $values): array
     {
@@ -315,7 +315,7 @@ class XMLParserArray
      * - Child elements are stored with their tag names as keys
      *
      * @param \SimpleXMLElement $xmlObject
-     * @return array|string Returns a string if the XML element has no children and no attributes,
+     * @return array<array-key, mixed>|string Returns a string if the XML element has no children and no attributes,
      *                      or an array if it has child elements or attributes.
      * @noinspection PhpFullyQualifiedNameUsageInspection
      */
@@ -360,8 +360,11 @@ class XMLParserArray
     /**
      * Insert element into target array,
      * handling multiple occurrences of the same tag name as an array of values.
+     * @param array<array-key, mixed> $target
+     * @param string $name
+     * @param mixed $element
      */
-    private static function getArrXML(array &$target, string $name, $element): void
+    private static function getArrXML(array &$target, string $name, mixed $element): void
     {
         if (isset($target[$name])) {
             if (!is_array($target[$name]) || !isset($target[$name][0])) {
@@ -399,7 +402,7 @@ class XMLParserArray
             foreach ($matches as $match) {
                 $attrName = $match[1];
                 // Value is in group 2 (double quotes) or group 3 (single quotes)
-                $attrValue = $match[2] !== '' ? $match[2] : ($match[3] ?? '');
+                $attrValue = ($match[2]??'') !== '' ? $match[2] : ($match[3] ?? '');
                 // Decode common XML entities
                 $attrValue = self::decodeXmlEntities($attrValue);
                 $attributes[$attrName] = $attrValue;
@@ -435,7 +438,7 @@ class XMLParserArray
      * - Child elements are stored with their tag names as keys
      *
      * @param string $xml
-     * @return array
+     * @return array<array-key, mixed>
      */
     private static function pureXMLParser(string $xml): array
     {
@@ -531,6 +534,8 @@ class XMLParserArray
 
     /**
      * Process CDATA sections by replacing them with placeholders
+     * @param string $xml
+     * @return string The XML string with CDATA sections replaced by unique placeholders.
      */
     private static function processCDATA(string $xml): string
     {
@@ -544,7 +549,7 @@ class XMLParserArray
             )
         );
         /** @noinspection RegExpRedundantEscape */
-        return preg_replace_callback(
+        return (string) preg_replace_callback(
             '~<!\[CDATA\[(.*?)\]\]>~s',
             function ($matches) {
                 $placeholder = self::$currentCDATAPlaceholder . count(self::$cdataStore) . '___';
@@ -574,7 +579,7 @@ class XMLParserArray
                 return self::$cdataStore[$placeholder] ?? $placeholder;
             },
             $content
-        );
+        )?:$content;
         self::$currentCDATAPlaceholder = '';
         return $data;
     }

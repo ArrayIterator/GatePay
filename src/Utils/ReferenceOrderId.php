@@ -243,6 +243,11 @@ class ReferenceOrderId
      *          AND
      *      order_id < 'ORDR-019d5a3f1234'
      * ```
+     * @return array{
+     *     from: non-empty-string,
+     *     to: non-empty-string,
+     *     pattern: non-empty-string,
+     * }
      */
     public static function getTimeRangePattern(
         string $productPrefix,

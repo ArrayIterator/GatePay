@@ -70,7 +70,8 @@ interface TransactionResultDataInterface extends Countable, JsonSerializable, It
     /**
      * Freeze the transaction data, making it immutable. Once frozen, the transaction data cannot be modified.
      *
-     * @return TransactionResultDataInterface
+     * @return TransactionResultDataInterface<TKey, TValue>
+     *     Returns the current instance of TransactionResultDataInterface with the transaction data frozen.
      */
     public function freeze() : TransactionResultDataInterface;
 

@@ -20,16 +20,11 @@ use function substr;
  * The registry maintains an associative array of registered gateways, where the keys are lowercase class names
  * and the values are the corresponding gateway instances. It also supports aliases for gateways,
  * allowing for more flexible retrieval of gateway instances.
- *
- * @template Gateway of GatewayInterface
- * @template GatewayClass of class-string<Gateway>
- * @template GatewayKey of lowercase-string<GatewayClass>
- * @template-implements Countable
  */
 class GatewayRegistry implements Countable
 {
     /**
-     * @var array<GatewayKey, Gateway> $gateways
+     * @var array<class-string<GatewayInterface>&lowercase-string, GatewayInterface> $gateways
      * An associative array that holds the registered gateway instances,
      * where the keys are lowercase class names of the gateways
      * and the values are the corresponding gateway instances.
@@ -39,23 +34,23 @@ class GatewayRegistry implements Countable
     /**
      * Aliases for the registered gateways, where the keys are the aliases (case-sensitive)
      * and the values are the original class names of the gateways.
-     * @var array<string, GatewayClass> $aliasesName
+     * @var array<string, class-string<GatewayInterface>> $aliasesName
      */
     private array $aliasesName = [];
 
     /**
      * An associative array that maps the original class names of the gateways
-     * to their corresponding lowercase class name keys in the $gateways array.
+     * to their corresponding lowercase class name value in the $gateways array.
      * This allows for efficient retrieval of gateway instances using their original class names,
      * even when aliases are used.
-     * @var array<GatewayClass, GatewayKey> $originalClassNames
+     * @var array<class-string<GatewayInterface>, class-string<GatewayInterface>&lowercase-string>
      */
     private array $originalClassNames = [];
 
     /**
      * Get all registered gateways in the registry.
      *
-     * @return array<GatewayKey, Gateway>
+     * @return array<class-string<GatewayInterface>&lowercase-string, GatewayInterface>
      */
     public function getGateways(): array
     {
@@ -65,7 +60,7 @@ class GatewayRegistry implements Countable
     /**
      * Get all registered aliases for the gateways in the registry.
      *
-     * @return array<string, GatewayClass>
+     * @return array<string, class-string<GatewayInterface>>
      */
     public function getAliases(): array
     {
@@ -76,7 +71,8 @@ class GatewayRegistry implements Countable
      * Adds an alias for a gateway adapter.
      *
      * @param string $alias The alias to be added for the gateway adapter.
-     * @param string|Gateway $adapter The gateway adapter instance or its class name for which the alias is being added.
+     * @param string|GatewayInterface $adapter
+     *      The gateway adapter instance or its class name for which the alias is being added.
      */
     public function addAlias(string $alias, string|GatewayInterface $adapter): ?GatewayInterface
     {
@@ -103,7 +99,7 @@ class GatewayRegistry implements Countable
     /**
      * Checks if a gateway with the specified name or instance exists in the registry.
      *
-     * @param string|Gateway|class-string<Gateway> $name The name or instance of the gateway to check.
+     * @param string|GatewayInterface|class-string<GatewayInterface> $name The name or instance of the gateway to check.
      * @return bool Returns true if the gateway exists, false otherwise.
      */
     public function has(string|GatewayInterface $name): bool
@@ -115,7 +111,7 @@ class GatewayRegistry implements Countable
      * Add a gateway instance to the registry with an optional alias.
      * The method takes a gateway instance and an optional alias as parameters.
      *
-     * @param Gateway $gateway
+     * @param GatewayInterface $gateway
      * @param string|null $alias
      */
     public function add(GatewayInterface $gateway, ?string $alias = null): void
@@ -125,6 +121,9 @@ class GatewayRegistry implements Countable
         if ($alias === null) {
             $alias = substr($className, strrpos($className, '\\') + 1);
         }
+        /**
+         * @var class-string<GatewayInterface>&lowercase-string $lowerClassName
+         */
         $this->gateways[$lowerClassName] = $gateway;
         $this->aliasesName[$alias] = $className;
         $this->originalClassNames[$className] = $lowerClassName;
@@ -135,8 +134,9 @@ class GatewayRegistry implements Countable
      * The method first checks if the provided name is an object and retrieves its class name if it is.
      * Then, it looks for the gateway in the $gateways array using the lowercase class name as the key.
      * If not found, it checks the $aliasesName array for an
-     * @param string|Gateway|GatewayClass|GatewayKey $name
-     * @return ?GatewayInterface
+     * @template G of GatewayInterface
+     * @param string|G|class-string<G> $name
+     * @return ?G
      */
     public function get(string|GatewayInterface $name): ?GatewayInterface
     {
@@ -152,7 +152,11 @@ class GatewayRegistry implements Countable
         }
         if (isset($this->gateways[$name])) {
             if ($this->gateways[$name] instanceof GatewayInterface) {
-                return $this->gateways[$name];
+                /**
+                 * @var G $gw
+                 */
+                $gw = $this->gateways[$name];
+                return $gw;
             }
             unset($this->gateways[$name]); // Remove the invalid gateway entry
             unset($this->originalClassNames[$name]); // Remove the original class name mapping
@@ -182,7 +186,11 @@ class GatewayRegistry implements Countable
             unset($this->originalClassNames[$className]); // Remove the original class name mapping
             return null; // No valid gateway found for the given alias
         }
-        return $this->gateways[$lowerClassName];
+        /**
+         * @var G $gw
+         */
+        $gw = $this->gateways[$lowerClassName];
+        return $gw;
     }
 
     /**
@@ -191,8 +199,9 @@ class GatewayRegistry implements Countable
      * The method first attempts to retrieve the gateway using the provided name or instance.
      * If found, it removes the gateway from both the $gateways and $aliases arrays.
      *
-     * @param string|Gateway|GatewayClass|GatewayKey $name
-     * @return Gateway|null Returns the removed gateway instance if found and removed, or null if not found.
+     * @template G of GatewayInterface
+     * @param string|G|class-string<G> $name
+     * @return G|null Returns the removed gateway instance if found and removed, or null if not found.
      */
     public function remove(string|GatewayInterface $name): ?GatewayInterface
     {

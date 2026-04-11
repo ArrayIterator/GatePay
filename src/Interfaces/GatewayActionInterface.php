@@ -13,21 +13,20 @@ use Psr\Log\LoggerInterface;
  * It can be implemented by enums or classes that represent specific payment actions (e.g., charge, refund).
  *
  * @template Action of GatewayAction
- * @template Gateway of GatewayInterface
  */
 interface GatewayActionInterface
 {
     /**
      * Constructor for the GatewayActionInterface.
      *
-     * @param Gateway $gateway The payment gateway associated with this action.
+     * @param GatewayInterface $gateway The payment gateway associated with this action.
      */
     public function __construct(GatewayInterface $gateway);
 
     /**
      * Get the payment gateway associated with this action.
      *
-     * @return Gateway The payment gateway that supports this action.
+     * @return GatewayInterface The payment gateway that supports this action.
      */
     public function getGateway(): GatewayInterface;
 
