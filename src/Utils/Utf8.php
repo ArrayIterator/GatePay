@@ -138,7 +138,7 @@ class Utf8
                     break;
                 default:
                     $string[$j] = "\xC3";
-                    $string[++$j] = chr(ord($string[$i]) - 64);
+                    $string[++$j] = chr((ord($string[$i]) - 64) & 0xFF);
                     break;
             }
         }
@@ -251,7 +251,12 @@ class Utf8
                 case "\xC0":
                 case "\xD0":
                     $c = (ord($string[$i] & "\x1F") << 6) | ord($string[++$i] & "\x3F");
-                    $string[$j] = $c < 256 ? chr($c) : '?';
+                    if ($c >= 0 && $c <= 255) {
+                        $string[$j] = chr($c);
+                    } else {
+                        $string[$j] = $c < 256 ? chr($c & 0xFF) : '?';
+                    }
+                    // $string[$j] = $c < 256 ? chr($c) : '?';
                     break;
                 case "\xF0":
                     ++$i;
