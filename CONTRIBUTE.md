@@ -101,8 +101,8 @@ Enhancement suggestions are welcome! Please provide:
 
 ```bash
 # Clone your fork
-git clone https://github.com/YOUR_USERNAME/GatePay.git
-cd GatePay
+git clone https://github.com/YOUR_USERNAME/GatePay-Core.git
+cd GatePay-Core
 
 # Install dependencies
 composer install
@@ -120,7 +120,7 @@ composer test
 ./vendor/bin/phpunit
 
 # Run tests with coverage
-./vendor/bin/phpunit --coverage-html .tmp/phpunit/coverage
+./vendor/bin/phpunit
 
 # Run code style check
 ./vendor/bin/phpcs
