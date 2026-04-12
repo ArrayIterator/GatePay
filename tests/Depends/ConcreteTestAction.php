@@ -9,6 +9,7 @@ use GatePay\Core\Interfaces\GatewayInterface;
 use GatePay\Core\Interfaces\TransactionInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Log\LoggerInterface;
 
 class ConcreteTestAction extends AbstractGatewayAction
@@ -19,11 +20,11 @@ class ConcreteTestAction extends AbstractGatewayAction
     }
 
     public function createRequest(
-        GatewayInterface $gateway,
-        TransactionInterface $transaction,
-        RequestFactoryInterface $requestFactory,
-        ?LoggerInterface $logger = null
+        GatewayInterface                               $gateway,
+        TransactionInterface                           $transaction,
+        RequestFactoryInterface&StreamFactoryInterface $factory,
+        ?LoggerInterface                               $logger = null
     ): RequestInterface {
-        return $requestFactory->createRequest('GET', 'https://test.example.com');
+        return $factory->createRequest('GET', 'https://test.example.com');
     }
 }

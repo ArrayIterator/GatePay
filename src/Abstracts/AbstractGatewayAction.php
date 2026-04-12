@@ -10,6 +10,7 @@ use GatePay\Core\Interfaces\GatewayInterface;
 use GatePay\Core\Interfaces\TransactionInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Log\LoggerInterface;
 use const E_WARNING;
 
@@ -111,9 +112,9 @@ abstract class AbstractGatewayAction implements GatewayActionInterface
      * @inheritdoc
      */
     abstract public function createRequest(
-        GatewayInterface $gateway,
-        TransactionInterface $transaction,
-        RequestFactoryInterface $requestFactory,
-        ?LoggerInterface $logger = null
+        GatewayInterface                               $gateway,
+        TransactionInterface                           $transaction,
+        RequestFactoryInterface&StreamFactoryInterface $factory,
+        ?LoggerInterface                               $logger = null
     ): RequestInterface;
 }

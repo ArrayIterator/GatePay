@@ -6,6 +6,7 @@ namespace GatePay\Core\Interfaces;
 use GatePay\Core\Enum\GatewayAction;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
+use Psr\Http\Message\StreamFactoryInterface;
 
 /**
  * This interface defines the contract for payment adapters that can be used with the PaymentGateway.
@@ -98,10 +99,11 @@ interface GatewayInterface
 
     /**
      * Process a transaction using the appropriate action handler for the specified transaction.
-     * The method takes a TransactionInterface object, a RequestFactoryInterface for creating HTTP requests,
+     * The method takes a TransactionInterface object,
+     * a RequestFactoryInterface&StreamFactoryInterface for creating HTTP requests,
      * @param TransactionInterface $transaction
      *     The transaction to be processed, which contains all the necessary information for processing the payment.
-     * @param RequestFactoryInterface $requestFactory
+     * @param RequestFactoryInterface&StreamFactoryInterface $factory
      *      The request factory to be used for creating the HTTP request for the transaction.
      * @param ClientInterface $client
      *      The HTTP client to be used for sending the request to the payment gateway.
@@ -113,8 +115,8 @@ interface GatewayInterface
      * @noinspection PhpFullyQualifiedNameUsageInspection
      */
     public function process(
-        TransactionInterface $transaction,
-        RequestFactoryInterface $requestFactory,
-        ClientInterface      $client
+        TransactionInterface                           $transaction,
+        RequestFactoryInterface&StreamFactoryInterface $factory,
+        ClientInterface                                $client
     ): TransactionProcessorInterface;
 }

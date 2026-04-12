@@ -12,6 +12,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Log\LoggerInterface;
 
 class AbstractGatewayActionTest extends TestCase
@@ -180,13 +181,13 @@ class AbstractGatewayActionTest extends TestCase
             }
 
             public function createRequest(
-                GatewayInterface $gateway,
-                TransactionInterface $transaction,
-                RequestFactoryInterface $requestFactory,
-                ?LoggerInterface $logger = null
+                GatewayInterface                               $gateway,
+                TransactionInterface                           $transaction,
+                RequestFactoryInterface&StreamFactoryInterface $factory,
+                ?LoggerInterface                               $logger = null
             ): RequestInterface {
                 $this->assertProcessable($gateway, $transaction);
-                return $requestFactory->createRequest('GET', 'https://test.example.com');
+                return $factory->createRequest('GET', 'https://test.example.com');
             }
         };
     }

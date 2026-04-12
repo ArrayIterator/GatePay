@@ -10,6 +10,7 @@ use GatePay\Core\Interfaces\GatewayInterface;
 use GatePay\Core\Interfaces\TransactionInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Log\LoggerInterface;
 use function array_filter;
 use function http_build_query;
@@ -48,10 +49,10 @@ class TestAction extends AbstractGatewayAction
      * @inheritdoc
      */
     public function createRequest(
-        GatewayInterface $gateway,
-        TransactionInterface $transaction,
-        RequestFactoryInterface $requestFactory,
-        ?LoggerInterface $logger = null
+        GatewayInterface                               $gateway,
+        TransactionInterface                           $transaction,
+        RequestFactoryInterface&StreamFactoryInterface $factory,
+        ?LoggerInterface                               $logger = null
     ): RequestInterface {
         // Ensure that the transaction is processable for this action and that the gateway is supported.
         $this->assertProcessable($gateway, $transaction);
@@ -72,7 +73,7 @@ class TestAction extends AbstractGatewayAction
         }
         $params = array_filter($params, 'is_scalar');
         $params['transaction_id'] = $transaction->getTransactionId();
-        return $requestFactory
+        return $factory
             ->createRequest(
                 'GET',
                 'https://localhost/test?transaction_id=' . http_build_query($params)

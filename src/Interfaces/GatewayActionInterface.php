@@ -6,6 +6,7 @@ namespace GatePay\Core\Interfaces;
 use GatePay\Core\Enum\GatewayAction;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -51,7 +52,8 @@ interface GatewayActionInterface
      *
      * @param GatewayInterface $gateway The payment gateway for which the request is being created.
      * @param TransactionInterface $transaction The transaction for which the request is being created.
-     * @param RequestFactoryInterface $requestFactory The factory to use for creating the HTTP request.
+     * @param RequestFactoryInterface&StreamFactoryInterface $factory
+     * The factory to use for creating the HTTP request.
      * @param LoggerInterface|null $logger Optional logger for logging any relevant information during request creation
      * @return RequestInterface The HTTP request to be sent to the payment gateway for processing this action.
      *
@@ -60,9 +62,9 @@ interface GatewayActionInterface
      * @noinspection PhpFullyQualifiedNameUsageInspection
      */
     public function createRequest(
-        GatewayInterface $gateway,
-        TransactionInterface $transaction,
-        RequestFactoryInterface $requestFactory,
-        ?LoggerInterface $logger = null
+        GatewayInterface                               $gateway,
+        TransactionInterface                           $transaction,
+        RequestFactoryInterface&StreamFactoryInterface $factory,
+        ?LoggerInterface                               $logger = null
     ) : RequestInterface;
 }
