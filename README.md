@@ -56,14 +56,14 @@ No magic. No surprises. No 3 AM debugging sessions.
 
 ### 🎯 What We Need To Solve
 
-| Problem | GatePay Solution                                   |
-|---------|----------------------------------------------------|
-| Complex Setup | 5 lines to process your first payment              |
-| Untraceable Flows | Every state change is logged & trackable           |
-| Gateway Lock-in | Swap gateways with zero code changes               |
-| State Chaos | Clear enum states: `PENDING`, `SUCCESS`, `ERROR`   |
-| Logging Nightmare | PSR-3 logger integration built-in                  |
-| HTTP Headaches | PSR-7/PSR-18 compliant - use ANY HTTP client       |
+| Problem | GatePay Solution                                     |
+|---------|------------------------------------------------------|
+| Complex Setup | 5 lines to process your first payment                |
+| Untraceable Flows | Every state change is logged & trackable             |
+| Gateway Lock-in | Swap gateways with zero code changes                 |
+| State Chaos | Clear enum states: `PENDING`, `SUCCESS`, `ERROR`     |
+| Logging Nightmare | PSR-3 logger integration built-in                    |
+| HTTP Headaches | PSR-7/PSR-17/PSR-18 compliant - use ANY HTTP client  |
 | Ambiguous Responses | Consistent `@attributes` + `@value` format for `XML` |
 
 ---
