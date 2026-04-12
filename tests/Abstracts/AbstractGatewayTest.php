@@ -12,10 +12,10 @@ use GatePay\Core\Interfaces\GatewayActionInterface;
 use GatePay\Core\Interfaces\TransactionProcessorInterface;
 use GatePay\Core\Transaction;
 use GatePay\CoreTests\Depends\ConcreteTestAction;
+use GuzzleHttp\Psr7\HttpFactory;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
-use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
@@ -35,17 +35,19 @@ class AbstractGatewayTest extends TestCase
     #[Test]
     public function getNameDerivedFromClassNameWhenNotSet(): void
     {
-        $gateway = $this->getMockForAbstractClass(AbstractGateway::class);
+        $gateway = new class extends AbstractGateway {
+        };
         $name = $gateway->getName();
-
         $this->assertIsString($name);
         $this->assertNotEmpty($name);
+        $this->assertSame('Abstract Gateway', $name);
     }
 
     #[Test]
     public function getNameCachesResult(): void
     {
-        $gateway = $this->getMockForAbstractClass(AbstractGateway::class);
+        $gateway = new class extends AbstractGateway {
+        };
         $first = $gateway->getName();
         $second = $gateway->getName();
 
@@ -69,7 +71,8 @@ class AbstractGatewayTest extends TestCase
     #[Test]
     public function getDescriptionReturnsNullByDefault(): void
     {
-        $gateway = $this->getMockForAbstractClass(AbstractGateway::class);
+        $gateway = new class extends AbstractGateway {
+        };
 
         $this->assertNull($gateway->getDescription());
     }
@@ -87,7 +90,8 @@ class AbstractGatewayTest extends TestCase
     #[Test]
     public function getVersionReturnsNullByDefault(): void
     {
-        $gateway = $this->getMockForAbstractClass(AbstractGateway::class);
+        $gateway = new class extends AbstractGateway {
+        };
 
         $this->assertNull($gateway->getVersion());
     }
@@ -105,8 +109,8 @@ class AbstractGatewayTest extends TestCase
     #[Test]
     public function isSupportSandboxReturnsFalseWhenUrlNotSet(): void
     {
-        $gateway = $this->getMockForAbstractClass(AbstractGateway::class);
-
+        $gateway = new class extends AbstractGateway {
+        };
         $this->assertFalse($gateway->isSupportSandbox());
     }
 
@@ -123,8 +127,8 @@ class AbstractGatewayTest extends TestCase
     #[Test]
     public function isSupportProductionReturnsFalseWhenUrlNotSet(): void
     {
-        $gateway = $this->getMockForAbstractClass(AbstractGateway::class);
-
+        $gateway = new class extends AbstractGateway {
+        };
         $this->assertFalse($gateway->isSupportProduction());
     }
 
@@ -141,7 +145,8 @@ class AbstractGatewayTest extends TestCase
     #[Test]
     public function getSandboxUrlThrowsWhenNotSet(): void
     {
-        $gateway = $this->getMockForAbstractClass(AbstractGateway::class);
+        $gateway = new class extends AbstractGateway {
+        };
 
         $this->expectException(UnsupportedModeException::class);
         $gateway->getSandboxUrl();
@@ -160,8 +165,8 @@ class AbstractGatewayTest extends TestCase
     #[Test]
     public function getProductionUrlThrowsWhenNotSet(): void
     {
-        $gateway = $this->getMockForAbstractClass(AbstractGateway::class);
-
+        $gateway = new class extends AbstractGateway {
+        };
         $this->expectException(UnsupportedModeException::class);
         $gateway->getProductionUrl();
     }
@@ -326,7 +331,7 @@ class AbstractGatewayTest extends TestCase
         };
 
         $transaction = new Transaction('txn_1', GatewayAction::CHARGE);
-        $requestFactory = $this->createMock(RequestFactoryInterface::class);
+        $requestFactory = new HttpFactory();
         $client = $this->createMock(ClientInterface::class);
 
         $this->expectException(UnsupportedActionException::class);
@@ -352,7 +357,7 @@ class AbstractGatewayTest extends TestCase
         };
 
         $transaction = new Transaction('txn_1', GatewayAction::CHARGE);
-        $requestFactory = $this->createMock(RequestFactoryInterface::class);
+        $requestFactory = new HttpFactory();
         $client = $this->createMock(ClientInterface::class);
 
         $this->expectException(UnsupportedActionException::class);
@@ -382,7 +387,7 @@ class AbstractGatewayTest extends TestCase
         };
 
         $transaction = new Transaction('txn_1', GatewayAction::CHARGE);
-        $requestFactory = $this->createMock(RequestFactoryInterface::class);
+        $requestFactory = new HttpFactory();
         $client = $this->createMock(ClientInterface::class);
         $client->method('sendRequest')->willReturn($response);
 
@@ -414,7 +419,7 @@ class AbstractGatewayTest extends TestCase
         };
 
         $transaction = new Transaction('txn_1', GatewayAction::CHARGE);
-        $requestFactory = $this->createMock(RequestFactoryInterface::class);
+        $requestFactory = new HttpFactory();
         $client = $this->createMock(ClientInterface::class);
         $client->method('sendRequest')->willThrowException(new \RuntimeException('Network error'));
 
@@ -447,13 +452,12 @@ class AbstractGatewayTest extends TestCase
         };
 
         $transaction = new Transaction('txn_1', GatewayAction::CHARGE);
-        $requestFactory = $this->createMock(RequestFactoryInterface::class);
+        $requestFactory = new HttpFactory();
         $client = $this->createMock(ClientInterface::class);
         $client->method('sendRequest')->willReturn($response);
         $logger = $this->createMock(LoggerInterface::class);
 
         $result = $gateway->process($transaction, $requestFactory, $client, $logger);
-
         $this->assertInstanceOf(TransactionProcessorInterface::class, $result);
     }
 
