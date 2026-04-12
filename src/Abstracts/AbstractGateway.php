@@ -14,6 +14,7 @@ use GatePay\Core\TransactionProcessor;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Log\LoggerInterface;
 use Throwable;
 use function get_class;
@@ -21,6 +22,7 @@ use function is_object;
 use function preg_replace;
 use function preg_replace_callback;
 use function sprintf;
+use function str_contains;
 use function str_replace;
 use function strrpos;
 use function strtoupper;
@@ -80,19 +82,27 @@ abstract class AbstractGateway implements GatewayInterface
             return $this->name;
         }
         $className = get_class($this);
-        // take last
-        $name = substr($className, strrpos($className, '\\') + 1);
+        // check if anonymous class
+        if (str_contains($className, '@anonymous')) {
+            $explode = explode('@anonymous', $className, 2);
+            $className = $explode[0];
+        }
+        $name = $className;
+        if (str_contains($className, "\\")) {
+            // take last
+            $name = substr($className, strrpos($className, '\\') + 1);
+        }
         // eg: "PayPalExpressGateway" => "PayPal Express Gateway"
         // eg: PayPal_Express_Gateway => "PayPal Express Gateway"
         $name = str_replace('_', ' ', $name);
-        $spacedName = (string) preg_replace_callback(
+        $spacedName = (string)preg_replace_callback(
             '/([a-z])([A-Z])/',
             function ($matches) {
                 return $matches[1] . ' ' . $matches[2];
             },
             $name
         );
-        return $this->name = trim((string) preg_replace('/\s+/', ' ', $spacedName));
+        return $this->name = trim((string)preg_replace('/\s+/', ' ', $spacedName));
     }
 
     /**
@@ -247,9 +257,9 @@ abstract class AbstractGateway implements GatewayInterface
      * @noinspection PhpUnusedParameterInspection
      */
     protected function prepareClient(
-        ClientInterface $client,
+        ClientInterface               $client,
         TransactionProcessorInterface $processor,
-        ?LoggerInterface $logger = null
+        ?LoggerInterface              $logger = null
     ): ClientInterface {
         return $client;
     }
@@ -265,7 +275,7 @@ abstract class AbstractGateway implements GatewayInterface
      */
     protected function postRequest(
         TransactionProcessorInterface $processor,
-        ?LoggerInterface $logger = null
+        ?LoggerInterface              $logger = null
     ): TransactionProcessorInterface {
         // You can implement any post-processing logic here,
         // such as logging, updating transaction status, etc.
@@ -285,10 +295,10 @@ abstract class AbstractGateway implements GatewayInterface
      * @noinspection PhpUnusedParameterInspection
      */
     protected function prepareRequest(
-        RequestInterface $request,
+        RequestInterface       $request,
         GatewayActionInterface $actionHandler,
-        TransactionInterface $transaction,
-        ?LoggerInterface $logger = null
+        TransactionInterface   $transaction,
+        ?LoggerInterface       $logger = null
     ): RequestInterface {
         return $request;
     }
@@ -298,10 +308,10 @@ abstract class AbstractGateway implements GatewayInterface
      * @final
      */
     public function process(
-        TransactionInterface $transaction,
-        RequestFactoryInterface $requestFactory,
-        ClientInterface $client,
-        ?LoggerInterface $logger = null
+        TransactionInterface                           $transaction,
+        RequestFactoryInterface&StreamFactoryInterface $factory,
+        ClientInterface                                $client,
+        ?LoggerInterface                               $logger = null
     ): TransactionProcessorInterface {
         if (!$this->hasAction($transaction->getAction())) {
             throw new UnsupportedActionException(
@@ -321,7 +331,7 @@ abstract class AbstractGateway implements GatewayInterface
                 )
             );
         }
-        $request = $action->createRequest($this, $transaction, $requestFactory, $logger);
+        $request = $action->createRequest($this, $transaction, $factory, $logger);
         $processor = new TransactionProcessor(
             gateway: $this,
             transaction: $transaction,
