@@ -37,7 +37,7 @@ When using GatePay:
 $apiKey = getenv('GATEWAY_API_KEY');
 
 // ✅ Always use HTTPS in production
-$gateway->setEndpoint('https://api.gateway.com');
+$gateway->setEndpoint('https://api.example.com');
 
 // ✅ Don't log sensitive data
 $logger->info('Transaction processed', ['id' => $txnId]);
